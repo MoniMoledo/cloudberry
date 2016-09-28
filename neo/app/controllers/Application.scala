@@ -2,48 +2,48 @@ package controllers
 
 import javax.inject.{Inject, Singleton}
 
-import actors._
-import akka.actor.{Actor, ActorSystem, DeadLetter, Props}
-import akka.stream.Materializer
+import actor.{NeoActor, NeoReactiveActor}
+import akka.actor.{Actor, ActorSystem, DeadLetter, PoisonPill, Props}
+import akka.stream.{Materializer, OverflowStrategy}
+import akka.stream.scaladsl.Source
 import akka.util.Timeout
-import db.Migration_20160324
-import edu.uci.ics.cloudberry.zion.asterix.{AsterixConnection, TwitterDataStoreActor, TwitterViewsManagerActor}
+import db.Migration_20160814
+import edu.uci.ics.cloudberry.zion.actor.{DataStoreManager, RESTFulBerryClient, ReactiveBerryClient}
 import edu.uci.ics.cloudberry.zion.common.Config
-import models.UserQuery
+import edu.uci.ics.cloudberry.zion.model.datastore.AsterixConn
+import edu.uci.ics.cloudberry.zion.model.impl.{AQLGenerator, JSONParser, QueryPlanner}
+import edu.uci.ics.cloudberry.zion.model.schema.Query
+import models.UserRequest
 import play.api.libs.concurrent.Execution.Implicits.defaultContext
-import play.api.libs.json.JsValue
+import play.api.libs.json.{JsError, JsValue}
 import play.api.libs.streams.ActorFlow
-import play.api.libs.ws.{WSClient, WSResponse}
+import play.api.libs.ws.WSClient
 import play.api.mvc._
 import play.api.{Configuration, Environment, Logger}
 
-import scala.concurrent.Await
 import scala.concurrent.duration._
-import scala.util.{Failure, Success}
+import scala.concurrent.{Await, Future}
 
 @Singleton
 class Application @Inject()(val wsClient: WSClient,
                             val configuration: Configuration,
-                            val environment: Environment,
-                            implicit val system: ActorSystem,
+                            val environment: Environment)
+                           (implicit val system: ActorSystem,
                             implicit val materializer: Materializer
                            ) extends Controller {
 
   val config = new Config(configuration)
-  val asterixConn = new AsterixConnection(config.AsterixURL, wsClient, config)
+  val asterixConn = new AsterixConn(config.AsterixURL, wsClient)
+
+  val loadMeta = Await.result(Migration_20160814.migration.up(asterixConn), 10 seconds)
+
+  val manager = system.actorOf(DataStoreManager.props(Migration_20160814.berryMeta, asterixConn, AQLGenerator, config))
+
+  val berryProp = RESTFulBerryClient.props(new JSONParser(), manager, new QueryPlanner(), suggestView = true, config)
+  val berryClient = system.actorOf(berryProp)
+  val neoActor = system.actorOf(NeoActor.props(berryProp))
 
   Logger.logger.info("I'm initializing")
-  val checkViewStatus = Migration_20160324(asterixConn).up()
-  val USGeoGnosis = Knowledge.buildUSKnowledge(environment)
-
-  Await.ready(checkViewStatus, config.AwaitInitial) onComplete {
-    case Success(succeed: Boolean) => if (!succeed) throw new IllegalStateException("Initialization failed")
-    case Failure(ex) => Logger.logger.error(ex.getMessage); throw ex
-  }
-
-  val twitterActor = system.actorOf(Props(new TwitterDataStoreActor(asterixConn, config)), "twitter")
-  val viewsActor = system.actorOf(Props(new TwitterViewsManagerActor(asterixConn, twitterActor, config)), "views")
-  val cachesActor = system.actorOf(Props(new CachesActor(viewsActor, USGeoGnosis, config)), "caches")
 
   val listener = system.actorOf(Props(classOf[Listener], this))
   system.eventStream.subscribe(listener, classOf[DeadLetter])
@@ -61,24 +61,38 @@ class Application @Inject()(val wsClient: WSClient,
   }
 
   def ws = WebSocket.accept[JsValue, JsValue] { request =>
-    ActorFlow.actorRef(out => UserActor.props(out, cachesActor, USGeoGnosis))
+    //    ActorFlow.actorRef(out => NeoActor.props(out, berryProp))
+    val prop = ReactiveBerryClient.props(new JSONParser(), manager, new QueryPlanner(), config, 1000)
+    ActorFlow.actorRef(out => NeoReactiveActor.props(out, prop))
   }
 
-  def tweet(id:String) = Action.async {
-    val url = "https://api.twitter.com/1/statuses/oembed.json?id="+id
+  def tweet(id: String) = Action.async {
+    val url = "https://api.twitter.com/1/statuses/oembed.json?id=" + id
     wsClient.url(url).get().map { response =>
       Ok(response.json)
     }
   }
 
-  def search(query: JsValue) = Action.async {
+  def neoQuery = Action.async(parse.json) { request =>
     import akka.pattern.ask
+    implicit val timeout: Timeout = Timeout(config.UserTimeOut)
 
-    import scala.concurrent.duration._
-    implicit val timeout = Timeout(5.seconds)
+    request.body.validate[UserRequest].map { request =>
+      (neoActor ? request.copy(mergeResult = true)).mapTo[JsValue].map(msg => Ok(msg))
+    }.recoverTotal {
+      e => Future(BadRequest("Detected error:" + JsError.toJson(e)))
+    }
+  }
 
-    (cachesActor ? query.as[UserQuery]).mapTo[JsValue].map { answer =>
-      Ok(answer)
+  def berryQuery = Action.async(parse.json) { request =>
+    import akka.pattern.ask
+    implicit val timeout: Timeout = Timeout(config.UserTimeOut)
+
+    import JSONParser._
+    request.body.validate[Query].map { query: Query =>
+      (berryClient ? query).mapTo[JsValue].map(msg => Ok(msg))
+    }.recoverTotal {
+      e => Future(BadRequest("Detected error:" + JsError.toJson(e)))
     }
   }
 

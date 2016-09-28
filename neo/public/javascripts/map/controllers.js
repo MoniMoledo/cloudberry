@@ -3,12 +3,6 @@ angular.module('cloudberry.map', ['leaflet-directive', 'cloudberry.common'])
     $scope.result = {};
     // map setting
     angular.extend($scope, {
-      // TODO make this center and level as parameters to make it general
-      // center: {
-      //   lat: 39.5,
-      //   lng: -96.35,
-      //   zoom: 4
-      // },
       tiles: {
         name: 'Mapbox',
         url: 'https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}',
@@ -55,10 +49,23 @@ angular.module('cloudberry.map', ['leaflet-directive', 'cloudberry.common'])
           dashArray: '',
           fillOpacity: 0.7
         },
-        colors: ['#053061', '#2166ac', '#4393c3', '#92c5de', '#d1e5f0', '#fddbc7', '#f4a582', '#d6604d', '#b2182b', '#67001f'],
+        colors: [ '#f7f7f7', '#053061', '#2166ac', '#4393c3', '#92c5de', '#f4a582', '#d6604d', '#b2182b', '#67001f'],
       },
 
     });
+
+      function resetGeoIds(bounds, polygons, idTag) {
+        Asterix.parameters.geoIds = [];
+        polygons.features.forEach(function(polygon){
+          if (bounds._southWest.lat <= polygon.properties.centerLat &&
+                polygon.properties.centerLat <= bounds._northEast.lat &&
+                bounds._southWest.lng <= polygon.properties.centerLog &&
+                polygon.properties.centerLog <= bounds._northEast.lng) {
+              Asterix.parameters.geoIds.push(polygon.properties[idTag]);
+          }
+        });
+      }
+
 
     // initialize
     $scope.init = function() {
@@ -94,11 +101,8 @@ angular.module('cloudberry.map', ['leaflet-directive', 'cloudberry.common'])
           if ($scope.status.zoomLevel > 5) {
             $scope.status.logicLevel = 'county';
             if (!$scope.status.init) {
-              Asterix.parameters.area.swLat = $scope.bounds._southWest.lat;
-              Asterix.parameters.area.swLog = $scope.bounds._southWest.lng;
-              Asterix.parameters.area.neLat = $scope.bounds._northEast.lat;
-              Asterix.parameters.area.neLog = $scope.bounds._northEast.lng;
-              Asterix.parameters.level = 'county';
+              resetGeoIds($scope.bounds, $scope.geojsonData.county, 'countyID');
+              Asterix.parameters.geoLevel = 'county';
               Asterix.queryType = 'zoom';
               Asterix.query(Asterix.parameters, Asterix.queryType);
             }
@@ -109,11 +113,8 @@ angular.module('cloudberry.map', ['leaflet-directive', 'cloudberry.common'])
           } else if ($scope.status.zoomLevel <= 5) {
             $scope.status.logicLevel = 'state';
             if (!$scope.status.init) {
-              Asterix.parameters.area.swLat = $scope.bounds._southWest.lat;
-              Asterix.parameters.area.swLog = $scope.bounds._southWest.lng;
-              Asterix.parameters.area.neLat = $scope.bounds._northEast.lat;
-              Asterix.parameters.area.neLog = $scope.bounds._northEast.lng;
-              Asterix.parameters.level = 'state';
+              resetGeoIds($scope.bounds, $scope.geojsonData.state, 'stateID');
+              Asterix.parameters.geoLevel = 'state';
               Asterix.queryType = 'zoom';
               Asterix.query(Asterix.parameters, Asterix.queryType);
             }
@@ -128,15 +129,14 @@ angular.module('cloudberry.map', ['leaflet-directive', 'cloudberry.common'])
       $scope.$on("leafletDirectiveMap.dragend", function() {
         if (!$scope.status.init) {
           $scope.bounds = $scope.map.getBounds();
-          Asterix.parameters.area.swLat = $scope.bounds._southWest.lat;
-          Asterix.parameters.area.swLog = $scope.bounds._southWest.lng;
-          Asterix.parameters.area.neLat = $scope.bounds._northEast.lat;
-          Asterix.parameters.area.neLog = $scope.bounds._northEast.lng;
-          Asterix.parameters.level = $scope.status.logicLevel;
+          var geoData = ($scope.status.logicLevel === 'state') ? $scope.geojsonData.state : $scope.geojsonData.county;
+          resetGeoIds($scope.bounds, geoData, $scope.status.logicLevel + "ID");
+          Asterix.parameters.geoLevel = $scope.status.logicLevel;
           Asterix.queryType = 'drag';
           Asterix.query(Asterix.parameters, Asterix.queryType);
         }
       });
+
     };
 
 
@@ -207,6 +207,31 @@ angular.module('cloudberry.map', ['leaflet-directive', 'cloudberry.common'])
 
     }
 
+    function setCenterAndBoundry(features) {
+
+       for(var id in features){
+         var sumX = 0.0;
+         var sumY = 0.0;
+         var length = 0;
+         if(features[id].geometry.type === "Polygon") {
+            features[id].geometry.coordinates[0].forEach(function(pair) {
+                sumX += pair[0];
+                sumY += pair[1];
+            });
+            length = features[id].geometry.coordinates[0].length
+         } else if( features[id].geometry.type === "MultiPolygon") {
+            features[id].geometry.coordinates.forEach(function(array){
+                array[0].forEach(function(pair){
+                    sumX += pair[0];
+                    sumY += pair[1];
+                });
+                length += array[0].length
+            });
+         }
+         features[id].properties["centerLog"] = sumX / length
+         features[id].properties["centerLat"] = sumY / length
+       }
+    }
     // load geoJson
     function loadGeoJsonFiles(onEachFeature) {
       $http.get("assets/data/state.json")
@@ -216,10 +241,11 @@ angular.module('cloudberry.map', ['leaflet-directive', 'cloudberry.common'])
             style: $scope.styles.stateStyle,
             onEachFeature: onEachFeature
           });
+          setCenterAndBoundry($scope.geojsonData.state.features);
           $scope.polygons.statePolygons.addTo($scope.map);
         })
         .error(function(data) {
-          console.log("Load state data failure");
+          console.error("Load state data failure");
         });
       $http.get("assets/data/county.json")
         .success(function(data) {
@@ -228,9 +254,10 @@ angular.module('cloudberry.map', ['leaflet-directive', 'cloudberry.common'])
             style: $scope.styles.countyStyle,
             onEachFeature: onEachFeature
           });
+          setCenterAndBoundry($scope.geojsonData.county.features);
         })
         .error(function(data) {
-          console.log("Load county data failure");
+          console.error("Load county data failure");
         });
 
     }
@@ -240,49 +267,45 @@ angular.module('cloudberry.map', ['leaflet-directive', 'cloudberry.common'])
      * @param    [Array]     mapPlotData, an array of coordinate and weight objects
      */
     function drawMap(result) {
-      var maxWeight = 10;
-      var minWeight = 0;
 
       // find max/min weight
-      angular.forEach(result, function(value, key) {
-        maxWeight = Math.max(maxWeight, value.count);
-      });
-
-      var range = maxWeight - minWeight;
-      if (range < 0) {
-        range = 0
-        maxWeight = 0
-        minWeight = 0
-      }
-      if (range < 10) {
-        range = 10
-      }
+      // angular.forEach(result, function(value, key) {
+      //  maxWeight = Math.max(maxWeight, value.count);
+      //});
 
       var colors = $scope.styles.colors;
 
       function getColor(d) {
-        if(!d) {
+        if(!d || d <= 0) {
           d = 0;
-        }
-        d = Math.ceil((d +1 - minWeight)/range * 10) - 1;
-        if( d<0){
-          d = 0;
-        }
-        if( d> 9) {
-          d = 9;
+        } else if (d ===1 ){
+          d = 1;
+        } else {
+          d = Math.ceil(Math.log10(d));
         }
         return colors[d];
       }
 
       function style(feature) {
-        return {
+        if (!feature.properties.count || feature.properties.count == 0){
+            return {
+                      fillColor: '#f7f7f7',
+                      weight: 2,
+                      opacity: 1,
+                      color: '#92c5de',
+                      dashArray: '3',
+                      fillOpacity: 0.2
+            };
+        } else {
+            return {
           fillColor: getColor(feature.properties.count),
           weight: 2,
           opacity: 1,
           color: 'white',
           dashArray: '3',
           fillOpacity: 0.5
-        };
+          };
+        }
       }
 
       // update count
@@ -292,7 +315,7 @@ angular.module('cloudberry.map', ['leaflet-directive', 'cloudberry.common'])
             d.properties.count = 0;
           for (var k in result) {
           //TODO make a hash map from ID to make it faster
-            if (result[k].key == d.properties.stateID)
+            if (result[k].state == d.properties.stateID)
               d.properties.count = result[k].count;
           }
         });
@@ -305,7 +328,7 @@ angular.module('cloudberry.map', ['leaflet-directive', 'cloudberry.common'])
             d.properties.count = 0;
           for (var k in result) {
           //TODO make a hash map from ID to make it faster
-            if (result[k].key == d.properties.countyID)
+            if (result[k].county == d.properties.countyID)
               d.properties.count = result[k].count;
           }
         });
@@ -322,22 +345,17 @@ angular.module('cloudberry.map', ['leaflet-directive', 'cloudberry.common'])
       });
 
       $scope.legend.onAdd = function(map) {
-        var div = L.DomUtil.create('div', 'info legend'),
-          grades = [0]
-
-        for (var i = 1; i < 10; i++) {
-          var value = Math.floor((i * 1.0 / 10) * range + minWeight);
-          if (value > grades[i - 1]) {
-            grades.push(value);
-          }
-        }
+        var div = L.DomUtil.create('div', 'info legend');
+        var grades = [1, 10, 100, 1000, 10000, 100000, 1000000, 10000000];
+        var gName  = ["1", "10", "100", "1K", "10K", "100K", "1M", "10M"];
 
         // loop through our density intervals and generate a label with a colored square for each interval
-        for (var i = 0; i < grades.length; i++) {
+        var i = 1
+        for (; i < grades.length; i++) {
           div.innerHTML +=
-            '<i style="background:' + getColor(grades[i]) + '"></i> ' +
-            grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
+            '<i style="background:' + getColor(grades[i]) + '"></i>' + gName[i-1] + '&ndash;' + gName[i] + '<br>';
         }
+        div.innerHTML += '<i style="background:' + getColor(grades[i-1]*10) + '"></i> ' + gName[i-1] + '+';
 
         return div;
       };
