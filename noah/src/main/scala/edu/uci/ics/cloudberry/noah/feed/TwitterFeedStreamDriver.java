@@ -93,17 +93,20 @@ public class TwitterFeedStreamDriver {
                 kafkaProducer = producer.createKafkaProducer();
             }
             // Do whatever needs to be done with messages;
-            while (!twitterClient.isDone()) {
+            int i = 0;
+            while (i<4) {
                 String msg = queue.take();
-                bw.write(msg);
+                //bw.write(msg);
                 if (config.isStoreKafka()) {
                     producer.store(config.getTopic(Config.Source.Zika), msg, kafkaProducer);
                 }
                 //if is not to store in file only, geo tag and send to database
-                if (!config.isFileOnly()) {
+                if (true) {
                     try {
-                        String adm = TagTweet.tagOneTweet(msg, true);
-                        socketAdapterClient.ingest(adm);
+                        String adm = TagBrTweet.tagOneTweet(msg, true);
+                        bw.write(adm);
+                        i++;
+                        //socketAdapterClient.ingest(adm);
                     } catch (UnknownPlaceException e) {
 
                     } catch (TwitterException e) {
