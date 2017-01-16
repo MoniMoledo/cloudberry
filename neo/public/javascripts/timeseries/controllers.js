@@ -1,19 +1,27 @@
 angular.module('cloudberry.timeseries', ['cloudberry.common'])
   .controller('TimeSeriesCtrl', function ($scope, $window, Asterix) {
+    $scope.ndx = null;
     $scope.result = {};
     $scope.resultArray = [];
     $scope.d3 = $window.d3;
     $scope.dc = $window.dc;
     $scope.crossfilter = $window.crossfilter;
+    $scope.empty = [];
+    for (var date = new Date(); date >= Asterix.startDate; date.setDate(date.getDate()-1)) {
+      $scope.empty.push({'time': new Date(date), 'count': 0});
+    }
     $scope.preProcess = function (result) {
       // TODO make the pattern can be changed by the returned result parameters
       var result_array = [];
-      var granu = Object.keys(result[0])[0]
-      angular.forEach(result, function (value, key) {
-        key = new Date(value[granu]);
-        value = +value.count;
-        result_array.push({'time':key, 'count':value});
-      });
+      if (result && result[0]) {
+        var granu = Object.keys(result[0])[0];
+        angular.forEach(result, function (value, key) {
+          key = new Date(value[granu]);
+          value = +value.count;
+          result_array.push({'time': key, 'count': value});
+        });
+
+      }
       return result_array;
     };
     $scope.$watch(
@@ -22,9 +30,12 @@ angular.module('cloudberry.timeseries', ['cloudberry.common'])
       },
 
       function(newResult) {
-        if(newResult && Asterix.queryType != 'time') {
+        if(newResult) {
           $scope.result = newResult;
           $scope.resultArray = $scope.preProcess(newResult);
+        } else {
+          $scope.result = {};
+          $scope.resultArray = [];
         }
       }
     );
@@ -51,7 +62,23 @@ angular.module('cloudberry.timeseries', ['cloudberry.common'])
                   return;
             }
 
-            chart.selectAll('*').remove();
+            var ndx = $scope.ndx;
+            if (ndx) {
+              ndx.remove();
+              ndx.add($scope.empty);
+              dc.redrawAll();
+              ndx.add(newVal);
+              dc.redrawAll();
+              return;
+            }
+
+            $scope.ndx = crossfilter(newVal);
+            var timeDimension = $scope.ndx.dimension(function (d) {
+              return d3.time.day(d.time);
+            });
+            var timeGroup = timeDimension.group().reduceSum(function (d) {
+              return d.count;
+            });
 
             var timeSeries = dc.barChart(chart[0][0]);
             var timeBrush = timeSeries.brush();
@@ -61,24 +88,16 @@ angular.module('cloudberry.timeseries', ['cloudberry.common'])
               Asterix.parameters.timeInterval.end = max;
               Asterix.queryType = 'time';
               Asterix.query(Asterix.parameters, Asterix.queryType);
-            }
+            };
 
             timeBrush.on('brushend', function (e) {
               var extent = timeBrush.extent();
               requestFunc(extent[0], extent[1])
             });
 
-            var ndx = crossfilter(newVal);
-            var timeDimension = ndx.dimension(function (d) {
-              if (d.time != null)
-                return d.time;
-            })
-            var timeGroup = timeDimension.group().reduceSum(function (d) {
-              return d.count;
-            });
-
-            var minDate = new Date(2016, 5, 30, 0, 0, 0, 0);
+            var minDate = Asterix.startDate;
             var maxDate = new Date();
+            chart.selectAll('a').remove();
             chart.append('a')
                 .text('Reset')
                 .attr('href',"#")
@@ -94,13 +113,15 @@ angular.module('cloudberry.timeseries', ['cloudberry.common'])
             timeSeries
               .width(width)
               .height(height)
+              .margins({top: margin.top, right: margin.right, bottom: margin.bottom, left: margin.left})
               .dimension(timeDimension)
               .group(timeGroup)
               .centerBar(true)
               .x(d3.time.scale().domain([minDate, maxDate]))
               .xUnits(d3.time.days)
               .gap(1)
-              .xAxisLabel(startDate + "   to   " + endDate);
+              .xAxisLabel(startDate + "   to   " + endDate)
+              .elasticY(true);
 
 
 

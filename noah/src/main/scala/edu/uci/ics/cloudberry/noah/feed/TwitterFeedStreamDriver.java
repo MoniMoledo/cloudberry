@@ -83,30 +83,27 @@ public class TwitterFeedStreamDriver {
                 .build();
 
 
+        GeneralProducerKafka producer = new GeneralProducerKafka(config);
+        KafkaProducer<String, String> kafkaProducer = null;
         // Establish a connection
         try {
-            GeneralProducerKafka producer = new GeneralProducerKafka(config);
             twitterClient.connect();
             isConnected = true;
-            KafkaProducer<String, String> kafkaProducer = null;
             if (config.isStoreKafka()) {
                 kafkaProducer = producer.createKafkaProducer();
             }
             // Do whatever needs to be done with messages;
-            int i = 0;
-            while (i<4) {
+            while (!twitterClient.isDone()) {
                 String msg = queue.take();
-                //bw.write(msg);
+                bw.write(msg);
                 if (config.isStoreKafka()) {
                     producer.store(config.getTopic(Config.Source.Zika), msg, kafkaProducer);
                 }
                 //if is not to store in file only, geo tag and send to database
-                if (true) {
+                if (!config.isFileOnly()) {
                     try {
-                        String adm = TagBrTweet.tagOneTweet(msg, true);
-                        bw.write(adm);
-                        i++;
-                        //socketAdapterClient.ingest(adm);
+                        String adm = TagTweet.tagOneTweet(msg, true);
+                        socketAdapterClient.ingest(adm);
                     } catch (UnknownPlaceException e) {
 
                     } catch (TwitterException e) {
@@ -117,8 +114,12 @@ public class TwitterFeedStreamDriver {
         } catch (Exception e) {
             e.printStackTrace(System.err);
         } finally {
-            bw.close();
-            twitterClient.stop();
+            if (bw != null)
+                bw.close();
+            if (twitterClient != null)
+                twitterClient.stop();
+            if (kafkaProducer != null)
+                kafkaProducer.close();
         }
     }
 

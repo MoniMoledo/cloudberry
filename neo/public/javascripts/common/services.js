@@ -1,9 +1,10 @@
 angular.module('cloudberry.common', [])
   .service('Asterix', function($http, $timeout, $location) {
-    var startDate = new Date(2016, 5, 30, 0, 0, 0, 0);
+    var startDate = new Date(2015, 10, 22, 0, 0, 0, 0);
     var ws = new WebSocket("ws://" + $location.host() + ":" + $location.port() + "/ws");
     var asterixService = {
 
+      startDate: startDate,
       parameters: {
         dataset: "twitter.ds_tweet",
         keywords: [],
@@ -28,8 +29,8 @@ angular.module('cloudberry.common', [])
           dataset: parameters.dataset,
           keywords: parameters.keywords,
           timeInterval: {
-            start: queryType==='time' ? Date.parse(parameters.timeInterval.start) : Date.parse(startDate),
-            end: queryType==='time' ? Date.parse(parameters.timeInterval.end) : Date.parse(new Date())
+            start:  Date.parse(parameters.timeInterval.start), //: Date.parse(startDate),
+            end:  Date.parse(parameters.timeInterval.end) //: Date.parse(new Date())
           },
           timeBin : parameters.timeBin,
           geoLevel: parameters.geoLevel,
@@ -53,13 +54,22 @@ angular.module('cloudberry.common', [])
             asterixService.hashTagResult = result.value;
             break;
           case "sample":
-            asterixService.tweetResult = result.value;
+            asterixService.tweetResult = result.value[0];
+            break;
+          case "batch":
+            asterixService.timeResult = result.value[0];
+            asterixService.mapResult = result.value[1];
+            asterixService.hashTagResult = result.value[2];
             break;
           case "error":
+            console.error(result);
             asterixService.errorMessage = result.value;
             break;
+          case "done":
+            break;
           default:
-            console.error("ws get unknown data: " + result);
+            console.error("ws get unknown data:" );
+            console.error(result);
             break;
         }
       });
