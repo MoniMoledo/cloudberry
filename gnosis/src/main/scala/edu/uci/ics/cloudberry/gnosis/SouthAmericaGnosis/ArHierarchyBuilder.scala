@@ -1,4 +1,4 @@
-package edu.uci.ics.cloudberry.gnosis
+package edu.uci.ics.cloudberry.gnosis.SouthAmericaGnosis
 
 import java.io._
 import java.lang.Exception

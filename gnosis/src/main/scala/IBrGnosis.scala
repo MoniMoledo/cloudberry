@@ -5,7 +5,7 @@ import java.io.File
 import com.vividsolutions.jts.geom.{Coordinate, Envelope}
 import edu.uci.ics.cloudberry.util.Rectangle
 
-trait IGnosis {
+trait IBrGnosis {
   def levelShapeMap: Map[TypeLevel, IGeoIndex]
 
   protected def load(shapeMap: Map[TypeLevel, File]): Map[TypeLevel, IGeoIndex]
