@@ -8,9 +8,9 @@ import edu.uci.ics.cloudberry.util.Profile._
 import twitter4j.{TwitterException, TwitterObjectFactory}
 
 object TagBrTweet {
-  var shapeMap = Seq( BrCountryLevel -> "neo/public/data/Br/BR_country.json",
-    BrStateLevel -> "neo/public/data/Br/BR_states.json",
-    BrCityLevel -> "neo/public/data/Br/BR_cities.json").toMap
+  var shapeMap = Seq( BrCountryLevel -> "neo/public/data/br_country.json",
+    BrStateLevel -> "neo/public/data/br_state.json",
+    BrCityLevel -> "neo/public/data/br_city.json").toMap
 
   val brGeoGnosis = profile("loading resource") {
     new BrGeoGnosis(shapeMap.mapValues(new File(_)).toMap)

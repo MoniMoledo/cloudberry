@@ -303,7 +303,7 @@ angular.module('cloudberry.map', ['leaflet-directive', 'cloudberry.common'])
     }
     // load geoJson
     function loadGeoJsonFiles(onEachFeature) {
-      $http.get("assets/data/state.json")
+      $http.get("assets/data/br_state.json")
         .success(function(data) {
           $scope.geojsonData.state = data;
           $scope.polygons.statePolygons = L.geoJson(data, {
