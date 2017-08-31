@@ -76,7 +76,7 @@ public class Config {
     private String axServer = "http://kiwi.ics.uci.edu:19002";
 
     @Option(name = "-dv", aliases = "--dataverse-zika-twitter", usage = "Dataverse name for zika related tweets")
-    private String dataverse = "twitter_zika";
+    private String dataverse = "twitter";
 
     @Option(name = "-uds", aliases = "--users-dataset", usage = "Dataset name for zika related tweets from specific users ")
     private String usersDataset = "ds_users_tweet";
