@@ -12,3 +12,4 @@ set wait-for-completion-feed "false";
 
 connect feed ZikaTweetFeed to dataset ds_zika;
 
+start feed ZikaTweetFeed;
