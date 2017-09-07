@@ -95,7 +95,6 @@ public class TwitterFeedStreamDriver {
             // Do whatever needs to be done with messages;
             while (!twitterClient.isDone()) {
                 String msg = queue.take();
-                bw.write(msg);
                 if (config.isStoreKafka()) {
                     producer.store(config.getTopic(Config.Source.Zika), msg, kafkaProducer);
                 }
@@ -103,6 +102,7 @@ public class TwitterFeedStreamDriver {
                 if (!config.isFileOnly()) {
                     try {
                         String adm = TagBrTweet.tagOneTweet(msg, true);
+                        bw.write(adm);
                         socketAdapterClient.ingest(adm);
                     } catch (UnknownPlaceException e) {
 
