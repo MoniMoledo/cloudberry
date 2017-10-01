@@ -46,28 +46,30 @@ angular.module('cloudberry.map', ['leaflet-directive', 'cloudberry.common','clou
       },
       styles: {
         initStyle: {
-          weight: 1.5,
-          fillOpacity: 0.5,
-          color: 'white'
+            fillColor: '#f7f7f7',
+            weight: 1.5,
+            opacity: 1,
+            color: '#33446e',
+            fillOpacity: 0.5
         },
         stateStyle: {
           fillColor: '#f7f7f7',
           weight: 1.5,
           opacity: 1,
-          color: '#92d1e1',
+          color: '#33446e',
           fillOpacity: 0.5
         },
         stateUpperStyle: {
           fillColor: '#f7f7f7',
           weight: 1.5,
           opacity: 1,
-          color: '#92d1e1',
+          color: '#33446e',
           fillOpacity: 0.5
         },
         cityStyle: {
           fillColor: '#f7f7f7',
           weight: 1.5,
-          opacity: 1,
+          opacity: 0.3,
           color: '#92d1e1',
           fillOpacity: 0.5
         },
@@ -147,7 +149,7 @@ angular.module('cloudberry.map', ['leaflet-directive', 'cloudberry.common','clou
 
       function resetHighlight(leafletEvent) {
         var style;
-        if (!$scope.status.init)
+        if ($scope.status.zoomLevel > 5)
           style = {
             weight: 1.5,
             fillOpacity: 0.5,
@@ -157,7 +159,7 @@ angular.module('cloudberry.map', ['leaflet-directive', 'cloudberry.common','clou
           style = {
             weight: 1.5,
             fillOpacity: 0.5,
-            color: '#92d1e1'
+            color: '#33446e'
           };
         if (leafletEvent)
           leafletEvent.target.setStyle(style);
