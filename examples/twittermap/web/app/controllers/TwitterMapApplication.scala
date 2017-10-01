@@ -19,7 +19,7 @@ class TwitterMapApplication @Inject()(val wsClient: WSClient,
                                       val config: Configuration,
                                       val environment: Environment) extends Controller {
 
-  val USCityDataPath: String = config.getString("us.city.path").getOrElse("/public/data/city.sample.json")
+  val USCityDataPath: String = config.getString("us.city.path").getOrElse("/public/data/br_city.sample.json")
   val cloudberryRegisterURL: String = config.getString("cloudberry.register").getOrElse("http://localhost:9000/admin/register")
   val cloudberryWS: String = config.getString("cloudberry.ws").getOrElse("ws://localhost:9000/ws")
   val sentimentEnabled: Boolean = config.getBoolean("sentimentEnabled").getOrElse(false)

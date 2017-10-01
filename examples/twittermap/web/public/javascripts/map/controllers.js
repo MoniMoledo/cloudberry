@@ -1,4 +1,5 @@
 angular.module('cloudberry.map', ['leaflet-directive', 'cloudberry.common','cloudberry.cache'])
+angular.module('cloudberry.map', ['leaflet-directive', 'cloudberry.common','cloudberry.cache'])
   .controller('MapCtrl', function($scope, $window, $http, $compile, cloudberry, leafletData, cloudberryConfig, Cache) {
 
     // add an alert bar of IE
@@ -216,7 +217,7 @@ angular.module('cloudberry.map', ['leaflet-directive', 'cloudberry.common','clou
         if ($scope.map) {
           $scope.status.zoomLevel = $scope.map.getZoom();
           $scope.bounds = $scope.map.getBounds();
-          if($scope.status.zoomLevel > 9) {
+          if($scope.status.zoomLevel > 7) {
             resetGeoInfo("city");
             if ($scope.polygons.statePolygons) {
               $scope.map.removeLayer($scope.polygons.statePolygons);
@@ -328,7 +329,7 @@ angular.module('cloudberry.map', ['leaflet-directive', 'cloudberry.common','clou
     }
     // load geoJson
     function loadGeoJsonFiles(onEachFeature) {
-      $http.get("assets/data/state.json")
+      $http.get("assets/data/br_state.json")
         .success(function(data) {
           $scope.geojsonData.state = data;
           $scope.polygons.statePolygons = L.geoJson(data, {
