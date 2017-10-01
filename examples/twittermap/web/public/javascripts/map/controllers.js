@@ -41,7 +41,7 @@ angular.module('cloudberry.map', ['leaflet-directive', 'cloudberry.common','clou
       polygons: {},
       status: {
         init: true,
-        zoomLevel: 4,
+        zoomLevel: 5,
         logicLevel: 'state'
       },
       styles: {
@@ -58,20 +58,6 @@ angular.module('cloudberry.map', ['leaflet-directive', 'cloudberry.common','clou
           fillOpacity: 0.5
         },
         stateUpperStyle: {
-          fillColor: '#f7f7f7',
-          weight: 1.5,
-          opacity: 1,
-          color: '#92d1e1',
-          fillOpacity: 0.5
-        },
-        countyStyle: {
-          fillColor: '#f7f7f7',
-          weight: 1.5,
-          opacity: 1,
-          color: '#92d1e1',
-          fillOpacity: 0.5
-        },
-        countyUpperStyle: {
           fillColor: '#f7f7f7',
           weight: 1.5,
           opacity: 1,
@@ -139,7 +125,7 @@ angular.module('cloudberry.map', ['leaflet-directive', 'cloudberry.common','clou
       var body = document.getElementsByTagName("search-bar")[0];
       body.appendChild(button);
       button.addEventListener ("click", function() {
-        $scope.map.setView([$scope.lat, $scope.lng], 4);
+        $scope.map.setView([$scope.lat, $scope.lng], 5);
       });
 
       //Adjust Map to be County or State
@@ -217,53 +203,24 @@ angular.module('cloudberry.map', ['leaflet-directive', 'cloudberry.common','clou
         if ($scope.map) {
           $scope.status.zoomLevel = $scope.map.getZoom();
           $scope.bounds = $scope.map.getBounds();
-          if($scope.status.zoomLevel > 7) {
+          if($scope.status.zoomLevel > 6) {
             resetGeoInfo("city");
             if ($scope.polygons.statePolygons) {
               $scope.map.removeLayer($scope.polygons.statePolygons);
             }
-            if ($scope.polygons.countyPolygons) {
-              $scope.map.removeLayer($scope.polygons.countyPolygons);
-            }
-            if ($scope.polygons.stateUpperPolygons) {
-              $scope.map.removeLayer($scope.polygons.stateUpperPolygons);
-            }
-            $scope.map.addLayer($scope.polygons.countyUpperPolygons);
-            loadCityJsonByBound(onEachFeature);
-          } else if ($scope.status.zoomLevel > 5) {
-            resetGeoInfo("county");
-            if (!$scope.status.init) {
-              cloudberry.queryType = 'zoom';
-              cloudberry.query(cloudberry.parameters, cloudberry.queryType);
-            }
-            if($scope.polygons.statePolygons) {
-              $scope.map.removeLayer($scope.polygons.statePolygons);
-            }
-            if($scope.polygons.cityPolygons) {
-              $scope.map.removeLayer($scope.polygons.cityPolygons);
-            }
-            if($scope.polygons.countyUpperPolygons){
-              $scope.map.removeLayer($scope.polygons.countyUpperPolygons);
-            }
             $scope.map.addLayer($scope.polygons.stateUpperPolygons);
-            $scope.map.addLayer($scope.polygons.countyPolygons);
-          } else if ($scope.status.zoomLevel <= 5) {
+            loadCityJsonByBound(onEachFeature);
+          } else if ($scope.status.zoomLevel <= 6) {
             resetGeoInfo("state");
             if (!$scope.status.init) {
               cloudberry.queryType = 'zoom';
               cloudberry.query(cloudberry.parameters, cloudberry.queryType);
             }
-            if($scope.polygons.countyPolygons) {
-              $scope.map.removeLayer($scope.polygons.countyPolygons);
-            }
             if($scope.polygons.cityPolygons) {
               $scope.map.removeLayer($scope.polygons.cityPolygons);
             }
             if ($scope.polygons.stateUpperPolygons) {
               $scope.map.removeLayer($scope.polygons.stateUpperPolygons);
-            }
-            if($scope.polygons.countyUpperPolygons){
-              $scope.map.removeLayer($scope.polygons.countyUpperPolygons);
             }
             if ($scope.polygons.statePolygons) {
                 $scope.map.addLayer($scope.polygons.statePolygons);
@@ -278,9 +235,7 @@ angular.module('cloudberry.map', ['leaflet-directive', 'cloudberry.common','clou
           var geoData;
           if ($scope.status.logicLevel === 'state') {
             geoData = $scope.geojsonData.state;
-          } else if ($scope.status.logicLevel === 'county') {
-            geoData = $scope.geojsonData.county;
-          } else if ($scope.status.logicLevel === 'city') {
+          }  else if ($scope.status.logicLevel === 'city') {
             geoData = $scope.geojsonData.city;
           } else {
             console.error("Error: Illegal value of logicLevel, set to default: state");
@@ -344,21 +299,6 @@ angular.module('cloudberry.map', ['leaflet-directive', 'cloudberry.common','clou
         })
         .error(function(data) {
           console.error("Load state data failure");
-        });
-      $http.get("assets/data/county.json")
-        .success(function(data) {
-          $scope.geojsonData.county = data;
-          $scope.polygons.countyPolygons = L.geoJson(data, {
-            style: $scope.styles.countyStyle,
-            onEachFeature: onEachFeature
-          });
-          $scope.polygons.countyUpperPolygons = L.geoJson(data, {
-            style: $scope.styles.countyUpperStyle
-          });
-          setCenterAndBoundry($scope.geojsonData.county.features);
-        })
-        .error(function(data) {
-          console.error("Load county data failure");
         });
     }
 
