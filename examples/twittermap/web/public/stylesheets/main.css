@@ -1,4 +1,4 @@
-body {
+  body {
   margin: 0;
   padding: 0;
   overflow-x: hidden;
@@ -6,41 +6,70 @@ body {
   width:100%;
   position: absolute;
 }
+
+#header-control {
+  position: absolute;
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  background-color: #fff;
+  z-index: 1000;
+  padding-left: 32px;
+  top: 0;
+}
+
+.subject-button {
+  margin: 0 8px;
+  padding: 8px 16px;
+  font-size: 16px;
+  background-color: transparent;
+  border: 2px solid #0094C6;
+  color: #0094C6;
+  font-weight: bold;
+  transition: all 1s ease;
+}
+
+.subject-button:hover {
+  background-color: #0094C6;
+  border: 2px solid #0094C6;
+  color: #fff;
+  transition: all 1s ease;
+}
+
+.active {
+  background-color: #0060C6;
+  border: solid 2px #0060C6;
+  color: white;
+}
+
+.leaflet-top, .leaflet-left {
+  height: 61%;
+  background-color: #fff;
+  padding-top: 140px;
+  width: 151px;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-around;
+  align-items: flex-start;
+  z-index: inherit;
+}
+
+.leaflet-right {
+  left: 0;
+}
+
+.leaflet-left, .leaflet-control {
+  margin-left: 0;
+}
+
 .map-group {
   position: absolute;
   top: 0;
   bottom: 0;
   width: 100%;
 }
-#sidebar {
-  position: relative;
-  top: 0;
-  bottom: 0;
-  left: 96%;
-  width: 24%;
-  height: 700px;
-  overflow: auto;
-  margin-left: 0%;
-  -webkit-transition: all 0.5s ease;
-  -moz-transition: all 0.5s ease;
-  -o-transition: all 0.5s ease;
-  transition: all 0.5s ease;
-  background-color: white;
-  opacity: 1.0;
-  z-index: 1;
-}
-
-#sidebar.toggled {
-  margin-left: -20%;
-}
-
-search-bar {
-  position: absolute;
-  left: 27%;
-  top: 2%;
-  width: 50%;
-}
-
 
 .info {
   padding: 6px 8px;
@@ -154,6 +183,10 @@ time-series {
 
 .normalize p{
   text-align: center;
+}
+
+.leaflet-left .leaflet-control {
+  margin-left: 0;
 }
 
 .search-keyword-btn{

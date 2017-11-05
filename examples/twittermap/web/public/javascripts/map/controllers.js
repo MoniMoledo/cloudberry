@@ -135,8 +135,8 @@ angular.module('cloudberry.map', ['leaflet-directive', 'cloudberry.common','clou
       button.style.position = 'inherit';
       button.style.top = '150%';
       button.style.left = '-53%';
-      var body = document.getElementsByTagName("search-bar")[0];
-      body.appendChild(button);
+      // var body = document.getElementsByTagName("search-bar")[0];
+      // body.appendChild(button);
       button.addEventListener ("click", function() {
         $scope.map.setView([$scope.lat, $scope.lng], 4);
       });
