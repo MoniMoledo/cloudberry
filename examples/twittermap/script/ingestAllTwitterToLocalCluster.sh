@@ -18,7 +18,7 @@
 #===============================================================================
 
 host=${1:-'http://localhost:19002/aql'}
-nc=${2:-"nc1"}
+nc=${2:-"blue"}
 echo "Ingesting sample tweets..."
 ./script/ingestTwitterToLocalCluster.sh $host $nc
 
