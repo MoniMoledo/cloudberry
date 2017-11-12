@@ -20,6 +20,7 @@ class TwitterMapApplication @Inject()(val wsClient: WSClient,
                                       val environment: Environment) extends Controller {
 
   val USCityDataPath: String = config.getString("us.city.path").getOrElse("/public/data/city.sample.json")
+  val BRCityDataPath: String = config.getString("br.city.path").getOrElse("/public/data/br_city.sample.json")
   val cloudberryRegisterURL: String = config.getString("cloudberry.register").getOrElse("http://localhost:9000/admin/register")
   val cloudberryWS: String = config.getString("cloudberry.ws").getOrElse("ws://localhost:9000/ws")
   val sentimentEnabled: Boolean = config.getBoolean("sentimentEnabled").getOrElse(false)
@@ -28,7 +29,8 @@ class TwitterMapApplication @Inject()(val wsClient: WSClient,
   val predefinedKeywords: Seq[String] = config.getStringSeq("predefinedKeywords").getOrElse(Seq())
   val startDate: String = config.getString("startDate").getOrElse("2015-11-22T00:00:00.000")
   val endDate : Option[String] = config.getString("endDate")
-  val cities: List[JsValue] = TwitterMapApplication.loadCity(environment.getFile(USCityDataPath))
+  //val cities: List[JsValue] = TwitterMapApplication.loadCity(environment.getFile(USCityDataPath))
+  val cities: List[JsValue] = TwitterMapApplication.loadCity(environment.getFile(BRCityDataPath))
   val cacheThreshold : Option[String] = config.getString("cacheThreshold")
   val querySliceMills: Option[String] = config.getString("querySliceMills")
 

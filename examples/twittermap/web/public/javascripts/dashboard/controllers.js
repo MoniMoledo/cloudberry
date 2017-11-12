@@ -96,7 +96,7 @@ angular.module('cloudberry.dashboard', [])
         config: "="
       },
       link: function ($scope, $element, $attrs) {
-        $http.get("assets/data/state.json")
+        $http.get("assets/data/br_state.json")
           .success(function(data) {
             angular.forEach(data.features, function(d) {
               if (d.properties.count)
