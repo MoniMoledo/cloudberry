@@ -21,14 +21,14 @@ angular.module('cloudberry.common', ['cloudberry.mapresultcache'])
               select: ["population"],
               as: ["population"]
             };
-          case "county":
-            return {
-              joinKey: ["county"],
-              dataset: "twitter.dsCountyPopulation",
-              lookupKey: ["countyID"],
-              select: ["population"],
-              as: ["population"]
-            };
+          // case "county":
+          //   return {
+          //     joinKey: ["county"],
+          //     dataset: "twitter.dsCountyPopulation",
+          //     lookupKey: ["countyID"],
+          //     select: ["population"],
+          //     as: ["population"]
+          //   };
           case "city":
             return {
               joinKey: ["city"],
@@ -80,7 +80,7 @@ angular.module('cloudberry.common', ['cloudberry.mapresultcache'])
     function getLevel(level){
       switch(level){
         case "state" : return "stateID";
-        case "county" : return "countyID";
+        //case "county" : return "countyID";
         case "city" : return "cityID";
       }
     }
