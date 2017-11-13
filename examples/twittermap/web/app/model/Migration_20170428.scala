@@ -10,7 +10,7 @@ private[model] class Migration_20170428() {
   import Migration_20170428._
 
   def up(wsClient: WSClient, cloudberryURL: String)(implicit ec: ExecutionContext): Future[Boolean] = {
-    Future.traverse(Seq(TwitterDrugMapDDL, TwitterMapDDL, StatePopulation, CountyPopulation, CityPopulation)) { jsonStr =>
+    Future.traverse(Seq(TwitterDrugMapDDL, TwitterMapDDL, StatePopulation, CountyPopulation, CityPopulation, NewsMapDDL)) { jsonStr =>
       wsClient.url(cloudberryURL).withHeaders("Content-Type" -> "application/json").post(jsonStr).map { response =>
         if (response.status % 100 == 2) {
           true
@@ -91,6 +91,32 @@ object Migration_20170428 {
       |    ],
       |    "primaryKey":["id"],
       |    "timeField":"create_at"
+      |  }
+      |}
+    """.stripMargin
+
+  val NewsMapDDL: String =
+    """
+      |{
+      |  "dataset":"webhose.ds_news",
+      |  "schema":{
+      |   "typeName":"webhose.typePost",
+      |    "dimension":[
+      |      {"name":"crawled","isOptional":false,"datatype":"Time"},
+      |      {"name":"published","isOptional":false,"datatype":"Time"},
+      |      {"name":"uuid","isOptional":false,"datatype":"String"},
+      |      {"name":"geo_tag.stateID","isOptional":false,"datatype":"Number"},
+      |      {"name":"geo_tag.cityID","isOptional":true,"datatype":"Number"},
+      |      {"name":"geo","isOptional":false,"datatype":"Hierarchy","innerType":"Number",
+      |        "levels":[
+      |          {"level":"state","field":"geo_tag.stateID"},
+      |          {"level":"city","field":"geo_tag.cityID"}]}
+      |    ],
+      |    "measurement":[
+      |      {"name":"text","isOptional":false,"datatype":"Text"}
+      |    ],
+      |    "primaryKey":["uuid"],
+      |    "timeField":"published"
       |  }
       |}
     """.stripMargin
