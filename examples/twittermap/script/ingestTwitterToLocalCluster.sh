@@ -21,7 +21,7 @@ set -o nounset                              # Treat unset variables as an error
 
 # ddl to register the twitter dataset
 host=${1:-"http://localhost:19002/aql"}
-nc=${2:-"nc1"}
+nc=${2:-"blue"}
 cat <<EOF | curl -XPOST --data-binary @- $host
 create dataverse twitter if not exists;
 use dataverse twitter
