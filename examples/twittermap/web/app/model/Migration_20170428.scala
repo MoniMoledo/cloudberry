@@ -10,7 +10,7 @@ private[model] class Migration_20170428() {
   import Migration_20170428._
 
   def up(wsClient: WSClient, cloudberryURL: String)(implicit ec: ExecutionContext): Future[Boolean] = {
-    Future.traverse(Seq(TwitterDrugMapDDL, TwitterMapDDL, StatePopulation, CountyPopulation, CityPopulation, NewsMapDDL)) { jsonStr =>
+    Future.traverse(Seq(TwitterMapDDL, StatePopulation, CountyPopulation, CityPopulation, NewsMapDDL)) { jsonStr =>
       wsClient.url(cloudberryURL).withHeaders("Content-Type" -> "application/json").post(jsonStr).map { response =>
         if (response.status % 100 == 2) {
           true
@@ -26,7 +26,7 @@ private[model] class Migration_20170428() {
 object Migration_20170428 {
   val migration = new Migration_20170428()
 
-  val TwitterDrugMapDDL: String =
+/*  val TwitterDrugMapDDL: String =
     """
       |{
       |  "dataset":"twitter.ds_tweet_money",
@@ -54,7 +54,7 @@ object Migration_20170428 {
       |    "timeField":"create_at"
       |  }
       |}
-    """.stripMargin
+    """.stripMargin*/
 
   val TwitterMapDDL: String =
     """
