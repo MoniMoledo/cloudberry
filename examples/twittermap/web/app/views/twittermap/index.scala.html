@@ -17,12 +17,23 @@
     <predefined-keywords></predefined-keywords>
 
     <div id="header-control" ng-controller="SearchCtrl">
-      <button class="subject-button" ng-class="{'active': keyword === 'dengue'}" ng-click="search($event)">Dengue</button>
-      <button class="subject-button" ng-class="{'active': keyword === 'zika'}" ng-click="search($event)">Zika</button>
-      <button class="subject-button" ng-class="{'active': keyword === 'febre amarela'}" ng-click="search($event)">Febre Amarela</button>
-      <button class="subject-button" ng-class="{'active': keyword === 'chikungunya'}" ng-click="search($event)">Chikungunya</button>
+      <button class="subject-button" ng-class="{'active': keyword === 'dengue'}" ng-click="search('dengue')">Dengue</button>
+      <button class="subject-button" ng-class="{'active': keyword === 'zika'}" ng-click="search('zika')">Zika</button>
+      <button class="subject-button" ng-class="{'active': keyword === 'febre amarela'}" ng-click="search('febre amarela')">Febre Amarela</button>
+      <button class="subject-button" ng-class="{'active': keyword === 'chikungunya'}" ng-click="search('chikungunya')">Chikungunya</button>
+      <fieldset>
+        <legend>Choose the data sources</legend>
+         <div>
+           <input type="checkbox" id="twitter" name="Twitter" value="twitter" ng-model="twitter" ng-click="search('')">
+           <label for="twitter">Twitter</label>
+         </div>
+         <div>
+           <input type="checkbox" id="news" name="news" value="news" ng-model="news" ng-click="search('')" checked>
+           <label for="news">News</label>
+        </div>
+      </fieldset>
     </div>
-
+            
     <div class="stats">
       <time-series id="chart"></time-series>
     </div>

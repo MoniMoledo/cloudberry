@@ -10,6 +10,8 @@ angular.module('cloudberry.mapresultcache', ['cloudberry.common'])
         var store = new HashMap();
         // To check if keyword in query is changed (new query?)
         var currentKeywords = [""];
+        // To check if data source in query is changed (new query?)
+        var currentSources = [""];
         // To check if time range in query changed (new query?)
         var endDate = new Date();
         // Deducts -1 to create a default value that can't exist
@@ -30,7 +32,7 @@ angular.module('cloudberry.mapresultcache', ['cloudberry.common'])
          * Checks keyword, time range and the cache store and returns the geoIds that
          * are not already cached.
          */
-        this.getGeoIdsNotInCache = function (keywords, timeInterval, geoIds, geoLevel) {
+        this.getGeoIdsNotInCache = function (keywords, timeInterval, geoIds, geoLevel, sources) {
             // The length of geoIdsNotInCache is 0 in case of complete cache hit,
             // same length as the geoIds parameter in case of complete cache miss,
             // otherwise in range (0, geoIds.length)
@@ -38,9 +40,11 @@ angular.module('cloudberry.mapresultcache', ['cloudberry.common'])
 
             // New query case
             if (keywords.toString() != currentKeywords.toString() ||
-                !angular.equals(currentTimeRange, timeInterval)) {
+                !angular.equals(currentTimeRange, timeInterval) ||
+                sources.toString() != currentSources.toString()) {
                 store.clear();
                 currentKeywords = keywords.slice();
+                currentSources = sources.slice();
                 currentTimeRange.start = timeInterval.start;
                 currentTimeRange.end = timeInterval.end;
             }

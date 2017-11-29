@@ -2,9 +2,17 @@ angular.module('cloudberry.util', ['cloudberry.common'])
   .controller('SearchCtrl', function($scope, $window, cloudberry, cloudberryConfig) {
     $scope.search = function(topic) {
       console.log(topic);
-      $scope.keyword = topic.target.innerText.toLowerCase()
-      console.log($scope.keyword);
-      if ($scope.keyword && $scope.keyword.trim().length > 0) {
+      $scope.keyword = topic.toLowerCase();
+      console.log($scope.twitter);
+      console.log($scope.news);
+      cloudberry.parameters.sources = [];
+      if($scope.news){
+          cloudberry.parameters.sources.push("news");
+      }
+      if($scope.twitter){
+          cloudberry.parameters.sources.push("twitter");
+      }
+      if ($scope.keyword && $scope.keyword.trim().length > 0 && cloudberry.parameters.sources.length > 0) {
         cloudberry.parameters.keywords = $scope.keyword.trim().split(/\s+/);
         // skip the empty query for now.
         cloudberry.query(cloudberry.parameters);
