@@ -687,16 +687,21 @@ angular.module('cloudberry.map', ['leaflet-directive', 'cloudberry.common','clou
     $scope.$watchCollection(
       function() {
         return {
-          'mapResult': cloudberry.mapResult,
-          'totalCount': cloudberry.totalCount,
+          'tmapResult': cloudberry.tweetMapResult,
+          'nmapResult': cloudberry.newsMapResult,
+          'totalCount': cloudberry.newsCount + cloudberry.tweetCount,
           'doNormalization': $('#toggle-normalize').prop('checked'),
           'doSentiment': $('#toggle-sentiment').prop('checked')
         };
       },
 
       function(newResult, oldValue) {
-        if (newResult['mapResult'] !== oldValue['mapResult']) {
-          $scope.result = newResult['mapResult'];
+        var twitterChanged = newResult['tmapResult'] !== oldValue['tmapResult'];
+        var newsChanged = newResult['nmapResult'] !== oldValue['nmapResult'];
+        console.log("twitterChanged" + twitterChanged);
+        console.log("newsChanged" + newsChanged);
+        if(newsChanged || twitterChanged) {
+            $scope.result = newResult['tmapResult'].concat(newResult['nmapResult']);
           if (Object.keys($scope.result).length !== 0) {
             $scope.status.init = false;
             drawMap($scope.result);

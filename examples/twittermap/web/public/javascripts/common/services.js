@@ -37,14 +37,33 @@ angular.module('cloudberry.common', ['cloudberry.mapresultcache'])
       estimable : true,
       transform: {
         wrap: {
-          key: "totalCount"
+          key: "newsCount"
         }
       }
-    });    
+    });
+
+  var countTweetRequest = JSON.stringify({
+      dataset: "twitter.ds_tweet",
+      global: {
+        globalAggregate: {
+          field: "*",
+          apply: {
+            name: "count"
+          },
+          as: "count"
+        }},
+      estimable : true,
+      transform: {
+        wrap: {
+          key: "tweetCount"
+        }
+      }
+    });       
 
     function requestLiveCounts() {
       if(ws.readyState === ws.OPEN){
         ws.send(countNewsRequest);
+        ws.send(countTweetRequest);
       }
     }
     
@@ -57,28 +76,21 @@ angular.module('cloudberry.common', ['cloudberry.mapresultcache'])
       }
     }
 
-    function getDatasetIndex(sources){
-      switch(sources[0]){
-        case "news" : return 0;
-        case "twitter" : return 1;
+    function getTimeField(dataset){
+      switch(dataset){
+        case "webhose.ds_news" : return "published";
+        case "twitter.ds_tweet" : return "create_at";
       }
     }
 
-    function getTimeField(sources){
-      switch(sources[0]){
-        case "news" : return "published";
-        case "twitter" : return "create_at";
+    function getIdField(dataset){
+      switch(dataset){
+        case "webhose.ds_news" : return "uuid";
+        case "twitter.ds_tweet" : return "id";
       }
     }
 
-    function getIdField(sources){
-      switch(sources[0]){
-        case "news" : return "uuid";
-        case "twitter" : return "id";
-      }
-    }
-
-    function getFilter(parameters, maxDay, geoIds) {
+    function getFilter(parameters, maxDay, geoIds, dataset) {
       var spatialField = getLevel(parameters.geoLevel);
       var keywords = [];
       for(var i = 0; i < parameters.keywords.length; i++){
@@ -90,7 +102,7 @@ angular.module('cloudberry.common', ['cloudberry.mapresultcache'])
 
       var filter = [
         {
-          field: getTimeField(parameters.sources),
+          field: getTimeField(dataset),
           relation: "inRange",
           values: [queryStartDate.toISOString(), parameters.timeInterval.end.toISOString()]
         }, {
@@ -111,10 +123,10 @@ angular.module('cloudberry.common', ['cloudberry.mapresultcache'])
       return filter;
     }
 
-    function byGeoRequest(parameters, geoIds) {
+    function byGeoRequest(parameters, geoIds, dataset) {
         return {
-          dataset: parameters.datasets[getDatasetIndex(parameters.sources)],
-          filter: getFilter(parameters, defaultNonSamplingDayRange, geoIds),
+          dataset: dataset,
+          filter: getFilter(parameters, defaultNonSamplingDayRange, geoIds, dataset),
           group: {
             by: [{
               field: "geo",
@@ -137,13 +149,13 @@ angular.module('cloudberry.common', ['cloudberry.mapresultcache'])
         };
     }
 
-    function byTimeRequest(parameters) {
+    function byTimeRequest(parameters, dataset) {
       return {
-        dataset: parameters.datasets[getDatasetIndex(parameters.sources)],
-        filter: getFilter(parameters, defaultNonSamplingDayRange, parameters.geoIds),
+        dataset: dataset,
+        filter: getFilter(parameters, defaultNonSamplingDayRange, parameters.geoIds, dataset),
         group: {
           by: [{
-            field: getTimeField(parameters.sources),
+            field: getTimeField(dataset),
             apply: {
               name: "interval",
               args: {
@@ -165,7 +177,8 @@ angular.module('cloudberry.common', ['cloudberry.mapresultcache'])
 
     var cloudberryService = {
 
-      totalCount: 0,
+      newsCount: 0,
+      tweetCount: 0,
       startDate: startDate,
       parameters: {
         datasets: ["webhose.ds_news", "twitter.ds_tweet"],
@@ -179,51 +192,84 @@ angular.module('cloudberry.common', ['cloudberry.mapresultcache'])
         geoLevel: "state",
         geoIds : [12,11,43,27,28,23,25,24,32,50,14,26,29,22,33,53,51,15,13,31,42,41,35,17,52,16,21]
       },
-
-      mapResult: [],
-      partialMapResult: [],
-      timeResult: [],
-      hashTagResult: [],
+      newsMapResult: [],
+      tweetMapResult: [],
+      tPartialMapResult: [],
+      nPartialMapResult: [],
+      tweetTimeResult: [],
+      newsTimeResult: [],
       errorMessage: null,
 
       query: function(parameters) {
-        console.log("nova query");
-        console.log(getDatasetIndex(parameters.sources));
-        console.log("-"+ getTimeField(parameters.sources));
-        console.log(getTimeField(parameters.sources));
-        console.log(getIdField(parameters.sources));
-        var sampleJson = (JSON.stringify({
-          dataset: getDatasetIndex(parameters.sources),
-          filter: getFilter(parameters, defaultSamplingDayRange, parameters.geoIds),
+        var newsDataset = "webhose.ds_news";
+        var tweetDataset = "twitter.ds_tweet";
+        // var newsSampleJson = (JSON.stringify({
+        //   dataset: newsDataset,
+        //   filter: getFilter(parameters, defaultSamplingDayRange, parameters.geoIds, newsDataset),
+        //   select: {
+        //     order: ["-"+ getTimeField(newsDataset)],
+        //     limit: defaultSamplingSize,
+        //     offset: 0,
+        //     field: [getTimeField(newsDataset), getIdField(newsDataset)]
+        //   },
+        //   transform: {
+        //     wrap: {
+        //       key: "newsSample"
+        //     }
+        //   }
+        // }));
+        var tweetSampleJson = (JSON.stringify({
+          dataset: tweetDataset,
+          filter: getFilter(parameters, defaultSamplingDayRange, parameters.geoIds, tweetDataset),
           select: {
-            order: ["-"+ getTimeField(parameters.sources)],
+            order: ["-"+ getTimeField(tweetDataset)],
             limit: defaultSamplingSize,
             offset: 0,
-            field: [getTimeField(parameters.sources), getIdField(parameters.sources)]
+            field: [getTimeField(tweetDataset), getIdField(tweetDataset)]
           },
           transform: {
             wrap: {
-              key: "sample"
+              key: "tweetSample"
             }
           }
         }));
 
+
           // Batch request without map result - used when the complete map result cache hit case
-          var batchWithoutGeoRequest = cloudberryConfig.querySliceMills > 0 ? (JSON.stringify({
-            batch: [byTimeRequest(parameters)],
+         var tweetBatchWithoutGeoRequest = cloudberryConfig.querySliceMills > 0 ? (JSON.stringify({
+            batch: [byTimeRequest(parameters, tweetDataset)],
             option: {
               sliceMillis: cloudberryConfig.querySliceMills
             },
             transform: {
               wrap: {
-                key: "batchWithoutGeoRequest"
+                key: "tweetBatchWithoutGeoRequest"
               }
             }
           })) : (JSON.stringify({
-              batch: [byTimeRequest(parameters)],
+              batch: [byTimeRequest(parameters, tweetDataset)],
               transform: {
                   wrap: {
-                      key: "batchWithoutGeoRequest"
+                      key: "tweetBatchWithoutGeoRequest"
+                  }
+              }
+          }));
+
+          var newsBatchWithoutGeoRequest = cloudberryConfig.querySliceMills > 0 ? (JSON.stringify({
+            batch: [byTimeRequest(parameters, newsDataset)],
+            option: {
+              sliceMillis: cloudberryConfig.querySliceMills
+            },
+            transform: {
+              wrap: {
+                key: "newsBatchWithoutGeoRequest"
+              }
+            }
+          })) : (JSON.stringify({
+              batch: [byTimeRequest(parameters, newsDataset)],
+              transform: {
+                  wrap: {
+                      key: "newsBatchWithoutGeoRequest"
                   }
               }
           }));
@@ -235,40 +281,85 @@ angular.module('cloudberry.common', ['cloudberry.mapresultcache'])
 
         // Batch request with only the geoIds whose map result are not cached yet - partial map result cache hit case
         // This case also covers the complete cache miss case.
-        var batchWithPartialGeoRequest = cloudberryConfig.querySliceMills > 0 ? (JSON.stringify({
-          batch: [byTimeRequest(parameters), byGeoRequest(parameters, geoIdsNotInCache)],
+        var tweetBatchWithPartialGeoRequest = cloudberryConfig.querySliceMills > 0 ? (JSON.stringify({
+          batch: [byTimeRequest(parameters, tweetDataset), byGeoRequest(parameters, geoIdsNotInCache, tweetDataset)],
           option: {
             sliceMillis: cloudberryConfig.querySliceMills
           },
           transform: {
             wrap: {
-              key: "batchWithPartialGeoRequest"
+              key: "tweetBatchWithPartialGeoRequest"
             }
           }
         })) : (JSON.stringify({
-            batch: [byTimeRequest(parameters), byGeoRequest(parameters, geoIdsNotInCache)],
+            batch: [byTimeRequest(parameters, tweetDataset), byGeoRequest(parameters, geoIdsNotInCache, tweetDataset)],
             transform: {
                 wrap: {
-                    key: "batchWithPartialGeoRequest"
+                    key: "tweetBatchWithPartialGeoRequest"
+                }
+            }
+        }));
+
+        var newsBatchWithPartialGeoRequest = cloudberryConfig.querySliceMills > 0 ? (JSON.stringify({
+          batch: [byTimeRequest(parameters,newsDataset), byGeoRequest(parameters, geoIdsNotInCache,newsDataset)],
+          option: {
+            sliceMillis: cloudberryConfig.querySliceMills
+          },
+          transform: {
+            wrap: {
+              key: "newsBatchWithPartialGeoRequest"
+            }
+          }
+        })) : (JSON.stringify({
+            batch: [byTimeRequest(parameters,newsDataset), byGeoRequest(parameters, geoIdsNotInCache,newsDataset)],
+            transform: {
+                wrap: {
+                    key: "newsBatchWithPartialGeoRequest"
                 }
             }
         }));
 
         // Complete map result cache hit case - exclude map result request
         if(geoIdsNotInCache.length === 0)  {
-          cloudberryService.mapResult = MapResultCache.getValues(cloudberryService.parameters.geoIds,
+          cloudberryService.tweetMapResult = MapResultCache.getValues(cloudberryService.parameters.geoIds,
             cloudberryService.parameters.geoLevel);
-
-          ws.send(sampleJson);
-          ws.send(batchWithoutGeoRequest);
+          cloudberryService.newsMapResult = MapResultCache.getValues(cloudberryService.parameters.geoIds,
+            cloudberryService.parameters.geoLevel);
+          if(cloudberryService.parameters.sources.includes("twitter")) {
+            ws.send(tweetSampleJson);
+            ws.send(tweetBatchWithoutGeoRequest);
+          }
+          if(cloudberryService.parameters.sources.includes("news")) {
+            ws.send(newsBatchWithoutGeoRequest);
+          }
+          if(!cloudberryService.parameters.sources.includes("news")) {
+            cloudberryService.newsMapResult = [];
+          }
+          if(!cloudberryService.parameters.sources.includes("twitter")) {
+              cloudberryService.tweetMapResult = [];
+            }
         }
         // Partial map result cache hit case
         else  {
-          cloudberryService.partialMapResult = MapResultCache.getValues(cloudberryService.parameters.geoIds,
+          if(cloudberryService.parameters.sources.includes("twitter")) {
+          cloudberryService.tPartialMapResult = MapResultCache.getValues(cloudberryService.parameters.geoIds,
                 cloudberryService.parameters.geoLevel);
-
-          ws.send(sampleJson);
-          ws.send(batchWithPartialGeoRequest);
+            ws.send(tweetSampleJson);
+            ws.send(tweetBatchWithPartialGeoRequest);
+          }
+          if(cloudberryService.parameters.sources.includes("news")) {
+          cloudberryService.nPartialMapResult = MapResultCache.getValues(cloudberryService.parameters.geoIds,
+                cloudberryService.parameters.geoLevel);
+            ws.send(newsBatchWithPartialGeoRequest);
+          }
+          if(!cloudberryService.parameters.sources.includes("news")) {
+            cloudberryService.newsMapResult = [];
+            cloudberryService.nPartialMapResult = [];
+          }
+          if(!cloudberryService.parameters.sources.includes("twitter")) {
+            cloudberryService.tPartialMapResult = [];
+            cloudberryService.tweetMapResult = [];
+          }
         }
       }
     };
@@ -276,37 +367,55 @@ angular.module('cloudberry.common', ['cloudberry.mapresultcache'])
     ws.onmessage = function(event) {
       $timeout(function() {
         var result = JSONbig.parse(event.data);
-
+        cloudberryService.tweetResult = [];
         switch (result.key) {
-
-          case "sample":
+          case "tweetSample":
             cloudberryService.tweetResult = result.value[0];
             break;
           // Complete cache hit case
-          case "batchWithoutGeoRequest":
+          case "tweetBatchWithoutGeoRequest":
             if(angular.isArray(result.value)) {
-              cloudberryService.timeResult = result.value[0];
+              cloudberryService.tweetTimeResult = result.value[0];
+            }
+            break;
+             // Complete cache hit case
+          case "newsBatchWithoutGeoRequest":
+            if(angular.isArray(result.value)) {
+              cloudberryService.newsTimeResult = result.value[0];
             }
             break;
           // Partial map result cache hit or complete cache miss case
-          case "batchWithPartialGeoRequest":
+          case "tweetBatchWithPartialGeoRequest":
             if(angular.isArray(result.value)) {
-              console.log(result.value);
-              cloudberryService.timeResult = result.value[0];
-              cloudberryService.mapResult = result.value[1].concat(cloudberryService.partialMapResult);
+              cloudberryService.tweetTimeResult = result.value[0];
+              cloudberryService.tweetMapResult = result.value[1].concat(cloudberryService.tPartialMapResult);
             }
             // When the query is executed completely, we update the map result cache.
             if((cloudberryConfig.querySliceMills > 0 && !angular.isArray(result.value) &&
                 result.value['key'] === "done") || cloudberryConfig.querySliceMills <= 0) {
               MapResultCache.putValues(geoIdsNotInCache, cloudberryService.parameters.geoLevel,
-                cloudberryService.mapResult);
+                cloudberryService.tweetMapResult);
             }
             break;
-          case "totalCount":
-            cloudberryService.totalCount = result.value[0][0].count;
+           case "newsBatchWithPartialGeoRequest":
+            if(angular.isArray(result.value)) {
+              cloudberryService.newsTimeResult = result.value[0];
+              cloudberryService.newsMapResult = result.value[1].concat(cloudberryService.nPartialMapResult);
+            }
+            // When the query is executed completely, we update the map result cache.
+            if((cloudberryConfig.querySliceMills > 0 && !angular.isArray(result.value) &&
+                result.value['key'] === "done") || cloudberryConfig.querySliceMills <= 0) {
+              MapResultCache.putValues(geoIdsNotInCache, cloudberryService.parameters.geoLevel,
+                cloudberryService.newsMapResult);
+            }
+            break;
+          case "newsCount":
+            cloudberryService.newsCount = result.value[0][0].count;
+            break;
+          case "tweetCount":
+            cloudberryService.tweetCount = result.value[0][0].count;
             break;
           case "error":
-            console.error(result);
             cloudberryService.errorMessage = result.value;
             break;
           case "done":

@@ -46,14 +46,21 @@ angular.module('cloudberry.timeseries', ['cloudberry.common'])
 
     $scope.$watch(
       function() {
-        return cloudberry.timeResult;
+        return
+          //'tTimeResult': cloudberry.tweetTimeResult,
+          cloudberry.newsTimeResult
       },
 
       function(newResult) {
         if(newResult) {
           $scope.result = newResult;
           $scope.resultArray = $scope.preProcess(newResult);
-        } else {
+        }
+        // else if(newResult['nTimeResult']) {
+        //   $scope.result = newResult['nTimeResult'];
+        //   $scope.resultArray = $scope.preProcess(newResult['nTimeResult']);
+        // }
+        else {
           $scope.result = {};
           $scope.resultArray = [];
         }
@@ -62,7 +69,7 @@ angular.module('cloudberry.timeseries', ['cloudberry.common'])
 
     $scope.$watch(
       function () {
-        return cloudberry.totalCount;
+        return cloudberry.tweetCount + cloudberry.newsCount;
       },
 
       function (newCount) {
