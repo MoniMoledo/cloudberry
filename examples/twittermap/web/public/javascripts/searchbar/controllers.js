@@ -3,8 +3,6 @@ angular.module('cloudberry.util', ['cloudberry.common'])
     $scope.search = function(topic) {
       console.log(topic);
       $scope.keyword = topic.toLowerCase();
-      console.log($scope.twitter);
-      console.log($scope.news);
       cloudberry.parameters.sources = [];
       if($scope.news){
           cloudberry.parameters.sources.push("news");

@@ -37,7 +37,6 @@ angular.module('cloudberry.mapresultcache', ['cloudberry.common'])
             // same length as the geoIds parameter in case of complete cache miss,
             // otherwise in range (0, geoIds.length)
             var geoIdsNotInCache = [];
-
             // New query case
             if (keywords.toString() != currentKeywords.toString() ||
                 !angular.equals(currentTimeRange, timeInterval) ||
