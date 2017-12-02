@@ -698,8 +698,7 @@ angular.module('cloudberry.map', ['leaflet-directive', 'cloudberry.common','clou
       function(newResult, oldValue) {
         var twitterChanged = newResult['tmapResult'] !== oldValue['tmapResult'];
         var newsChanged = newResult['nmapResult'] !== oldValue['nmapResult'];
-        console.log("twitterChanged" + twitterChanged);
-        console.log("newsChanged" + newsChanged);
+
         if(newsChanged || twitterChanged) {
             $scope.result = newResult['tmapResult'].concat(newResult['nmapResult']);
           if (Object.keys($scope.result).length !== 0) {

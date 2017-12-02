@@ -1,8 +1,12 @@
 angular.module('cloudberry.util', ['cloudberry.common'])
   .controller('SearchCtrl', function($scope, $window, cloudberry, cloudberryConfig) {
     $scope.search = function(topic) {
-      console.log(topic);
-      $scope.keyword = topic.toLowerCase();
+      if(topic) {
+        $scope.keyword = topic.toLowerCase();
+      }
+      console.log('\nTopic:', $scope.keyword);
+      console.log('Twitter', $scope.twitter);
+      console.log('News', $scope.news);
       cloudberry.parameters.sources = [];
       if($scope.news){
           cloudberry.parameters.sources.push("news");
