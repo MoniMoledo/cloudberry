@@ -6,7 +6,7 @@
     <div class="map-group">
       <alert-bar></alert-bar>
 
-    <<map lat="-12.6" lng="-50.4" zoom="5"></map>
+    <map lat="-12.6" lng="-50.4" zoom="4"></map>
 
       <div id="logo">
       </div>
@@ -15,12 +15,23 @@
 
     <!-- <search-bar></search-bar> -->
     <predefined-keywords></predefined-keywords>
+    
 
     <div id="header-control" ng-controller="SearchCtrl">
-      <button class="subject-button" ng-class="{'active': keyword === 'dengue'}" ng-click="search('dengue')">Dengue</button>
-      <button class="subject-button" ng-class="{'active': keyword === 'zika'}" ng-click="search('zika')">Zika</button>
-      <button class="subject-button" ng-class="{'active': keyword === 'febre amarela'}" ng-click="search('febre amarela')">Febre Amarela</button>
-      <button class="subject-button" ng-class="{'active': keyword === 'chikungunya'}" ng-click="search('chikungunya')">Chikungunya</button>
+      <div class="transparent">
+
+      </div>
+      <div class="controls">
+        <div class="title">
+        <h1>Aedes</h1>
+        <h3>Webview</h3>
+      </div>
+      <div class="buttons">
+        <button class="subject-button" ng-class="{'active': keyword === 'dengue'}" ng-click="search('dengue')">Dengue</button>
+        <button class="subject-button" ng-class="{'active': keyword === 'zika'}" ng-click="search('zika')">Zika</button>
+        <button class="subject-button" ng-class="{'active': keyword === 'febre amarela'}" ng-click="search('febre amarela')">Febre Amarela</>
+        <button class="subject-button" ng-class="{'active': keyword === 'chikungunya'}" ng-click="search('chikungunya')">Chikungunya</button>
+      </div>
       <fieldset>
          <div>
            <input type="checkbox" id="twitter" name="Twitter" value="twitter" ng-model="twitter" ng-click="search()">
@@ -31,6 +42,7 @@
            <label for="news">News</label>
         </div>
       </fieldset>
+      </div>
     </div>
             
     <div class="stats">
