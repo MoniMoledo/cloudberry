@@ -1,10 +1,11 @@
-@import url("https://fonts.googleapis.com/css?family=Poiret+One");
+@import url('https://fonts.googleapis.com/css?family=Poiret+One');
+
 body {
   margin: 0;
   padding: 0;
   overflow-x: hidden;
-  height: 100%;
-  width: 100%;
+  height:100%;
+  width:100%;
   position: absolute;
 }
 
@@ -22,17 +23,16 @@ body {
 }
 
 #title {
-  font-family: 'Poiret One', cursive;
-  color: #000;
-  z-index: 1000;
-}
+    font-family: 'Poiret One', cursive;
+    color: #000;
+    z-index: 1000;
 
-#title h1 {
-  font-size: 46px;
-}
-
-#title h3 {
-  font-size: 18px;
+    h1 {
+        font-size: 46px;
+    }
+    h3 {
+        font-size: 18px;
+    }
 }
 
 .subject-button {
@@ -94,17 +94,14 @@ body {
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
   border-radius: 5px;
 }
-
 .info h4 {
   margin: 0 0 5px;
   color: #777;
 }
-
 .legend {
   line-height: 18px;
   color: #555;
 }
-
 .legend i {
   width: 18px;
   height: 18px;
@@ -120,38 +117,39 @@ body {
   height: 36px;
   text-align: center;
   vertical-align: middle;
-  font-size: 20px;
+  font-size:20px;
 }
 
 .fa-2x {
   font-size: 2em;
 }
 
-.col-xs-2 {
+.col-xs-2{
+  padding-left: 0;
+  padding-right: 0;
+}
+.col-xs-10{
   padding-left: 0;
   padding-right: 0;
 }
 
-.col-xs-10 {
-  padding-left: 0;
-  padding-right: 0;
-}
-
-#logo_img {
+#logo_img{
   z-index: 0;
   position: absolute;
-  top: 2%;
-  left: 10%;
-  width: 15%;
+  top:2%;
+  left:10%;
+  width : 15%;
   height: 10%;
+
 }
 
-.btn.btn-info {
+.btn.btn-info{
   position: relative;
   left: 110%;
+
 }
 
-#powerby {
+#powerby{
   position: absolute;
   bottom: 0%;
   left: 74%;
@@ -160,12 +158,12 @@ body {
 }
 
 .white {
-  color: white;
+  color : white;
 }
 
-.stats {
+.stats{
   position: absolute;
-  bottom: 0;
+  bottom:0;
   pointer-events: none;
   line-height: 1;
   width: 100%;
@@ -179,26 +177,26 @@ time-series {
   left: 4%;
 }
 
-#count-div {
+#count-div{
   color: #000000;
-  font-weight: 500;
+  font-weight:500;
   margin-top: 20px;
   margin-bottom: 40px;
   padding-left: 10px;
   float: left;
 }
 
-#count {
+#count{
   font-size: 32px;
   margin-bottom: 0;
   text-align: right;
 }
 
-#count-text {
+#count-text{
   font-size: 13px;
 }
 
-.normalize p {
+.normalize p{
   text-align: center;
 }
 
@@ -206,19 +204,19 @@ time-series {
   margin-left: 0;
 }
 
-.search-keyword-btn {
+.search-keyword-btn{
   background-color: crimson;
   color: white;
   font-weight: bold;
   border-radius: 10px;
-  box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
 }
 
-.search-keyword-btn:active, .search-keyword-btn:focus, .search-keyword-btn:hover {
+.search-keyword-btn:active, .search-keyword-btn:focus, .search-keyword-btn:hover{
   background-color: transparent;
   color: black;
 }
 
-.search-keyword-btn-group {
+.search-keyword-btn-group{
   margin-left: 36%;
 }

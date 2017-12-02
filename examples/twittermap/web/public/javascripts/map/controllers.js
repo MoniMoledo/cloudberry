@@ -30,7 +30,9 @@ angular.module('cloudberry.map', ['leaflet-directive', 'cloudberry.common','clou
         type: 'xyz',
         options: {
           accessToken: 'pk.eyJ1IjoiamVyZW15bGkiLCJhIjoiY2lrZ2U4MWI4MDA4bHVjajc1am1weTM2aSJ9.JHiBmawEKGsn3jiRK_d0Gw',
-          id: 'jeremyli.p6f712pj'
+          id: 'jeremyli.p6f712pj',
+          maxZoom: 8,
+          minZoom: 4,
         }
       },
       controls: {
@@ -216,7 +218,7 @@ angular.module('cloudberry.map', ['leaflet-directive', 'cloudberry.common','clou
         if ($scope.map) {
           $scope.status.zoomLevel = $scope.map.getZoom();
           $scope.bounds = $scope.map.getBounds();
-          if($scope.status.zoomLevel > 5) {
+          if($scope.status.zoomLevel > 7) {
             resetGeoInfo("city");
             if ($scope.polygons.statePolygons) {
               $scope.map.removeLayer($scope.polygons.statePolygons);
