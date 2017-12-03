@@ -23,25 +23,25 @@
       </div>
       <div class="controls">
         <div class="title">
-        <h1>Aedes</h1>
-        <h3>Webview</h3>
-      </div>
+          <h1>Aedes</h1>
+          <h3>Webview</h3>
+        </div>
       <div class="buttons">
         <button class="subject-button" ng-class="{'active': keyword === 'dengue'}" ng-click="search('dengue')">Dengue</button>
         <button class="subject-button" ng-class="{'active': keyword === 'zika'}" ng-click="search('zika')">Zika</button>
         <button class="subject-button" ng-class="{'active': keyword === 'febre amarela'}" ng-click="search('febre amarela')">Febre Amarela</>
         <button class="subject-button" ng-class="{'active': keyword === 'chikungunya'}" ng-click="search('chikungunya')">Chikungunya</button>
-      </div>
-      <fieldset>
-         <div>
+        <div class="sources">
+         <span>
            <input type="checkbox" id="twitter" name="Twitter" value="twitter" ng-model="twitter" ng-click="search()">
            <label for="twitter">Twitter</label>
-         </div>
-         <div>
+         </span>
+         <span>
            <input type="checkbox" id="news" name="news" value="news" ng-model="news" ng-click="search()">
            <label for="news">News</label>
-        </div>
-      </fieldset>
+        </span>
+      </div>
+      </div>
       </div>
     </div>
             

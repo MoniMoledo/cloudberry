@@ -1,4 +1,5 @@
 @import url("https://fonts.googleapis.com/css?family=Poiret+One");
+@import url("https://fonts.googleapis.com/css?family=Roboto");
 body {
   margin: 0;
   padding: 0;
@@ -10,29 +11,58 @@ body {
 
 #header-control {
   position: absolute;
-  height: 120px;
+  min-height: 120px;
   display: flex;
   align-items: center;
   justify-content: center;
   width: 100%;
-  background-color: #fff;
+  background: rgba(0, 0, 0, 0.85);
   z-index: 1000;
-  padding-left: 32px;
   top: 0;
+  font-family: 'Roboto', sans-serif;
 }
 
-#title {
+#header-control .controls {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-flow: row wrap;
+  filter: none;
+}
+
+#header-control .title {
   font-family: 'Poiret One', cursive;
-  color: #000;
+  color: #0094C6;
   z-index: 1000;
+  display: flex;
+  flex-flow: row wrap;
+  width: 162px;
+  justify-content: flex-end;
+  padding: 16px 0;
 }
 
-#title h1 {
-  font-size: 46px;
+#header-control .title h1 {
+  font-size: 50px;
+  margin: 0;
+  margin-bottom: -7px;
 }
 
-#title h3 {
-  font-size: 18px;
+#header-control .title h3 {
+  font-size: 21px;
+  margin: 0;
+}
+
+#header-control .buttons {
+  width: 640px;
+  display: flex;
+  justify-content: center;
+  flex-flow: row wrap;
+}
+
+#header-control .buttons .sources {
+  color: #0094C6;
+  width: 154px;
 }
 
 .subject-button {
@@ -44,6 +74,10 @@ body {
   color: #0094C6;
   font-weight: bold;
   transition: all 1s ease;
+}
+
+.subject-button:focus {
+  outline: 0;
 }
 
 .subject-button:hover {
