@@ -55,21 +55,33 @@ body {
   }
 
   .buttons {
-    width: 640px;
+    width: 80%;
     display: flex;
     justify-content: center;
     flex-flow: row wrap;
+    padding-top: 16px;
+
+    .buttons-group {
+      width: 612px;
+      display: flex;
+      justify-content: space-between;
+    }
 
     .sources {
       color: #0094C6;
-      width: 154px;
+      width: 100%;
+      text-align: center;
+      padding-top: 8px;
+      > span {
+        margin: 0 8px;
+      }
     }
   }
 }
 
 .subject-button {
-  margin: 0 8px;
-  padding: 8px 16px;
+  height: 44px;
+  width: 140px;
   font-size: 16px;
   background-color: transparent;
   border: 2px solid #0094C6;
@@ -125,7 +137,6 @@ body {
 .info {
   padding: 6px 8px;
   font: 14px/16px Arial, Helvetica, sans-serif;
-  background: white;
   background: rgba(255, 255, 255, 0.8);
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
   border-radius: 5px;
