@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css?family=Poiret+One');
+@import url('https://fonts.googleapis.com/css?family=Roboto');
 
 body {
   margin: 0;
@@ -11,39 +12,87 @@ body {
 
 #header-control {
   position: absolute;
-  height: 120px;
+  min-height: 120px;
   display: flex;
   align-items: center;
   justify-content: center;
   width: 100%;
-  background-color: #fff;
+  background: rgba(0, 0, 0, 0.85);
   z-index: 1000;
-  padding-left: 32px;
   top: 0;
-}
+  font-family: 'Roboto', sans-serif;
+  // -webkit-filter: blur(1px);
+  // filter: blur(1px);
 
-#title {
+  .controls {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-flow: row wrap;
+    filter: none;
+  }
+
+  .title {
     font-family: 'Poiret One', cursive;
-    color: #000;
+    color: #0094C6;
     z-index: 1000;
+    display: flex;
+    flex-flow: row wrap;
+    width: 206px;
+    justify-content: flex-end;
+    padding: 16px 0;
+    letter-spacing: 6px;
 
-    h1 {
-        font-size: 46px;
+      h1 {
+        font-size: 50px;
+        margin: 0;
+        margin-bottom: -7px;
+      }
+      h3 {
+          font-size: 21px;
+          margin: 0;
+      }
+  }
+
+  .buttons {
+    width: 80%;
+    display: flex;
+    justify-content: center;
+    flex-flow: row wrap;
+    padding-top: 16px;
+
+    .buttons-group {
+      width: 612px;
+      display: flex;
+      justify-content: space-between;
     }
-    h3 {
-        font-size: 18px;
+
+    .sources {
+      color: #0094C6;
+      width: 100%;
+      text-align: center;
+      padding-top: 8px;
+      > span {
+        margin: 0 8px;
+      }
     }
+  }
 }
 
 .subject-button {
-  margin: 0 8px;
-  padding: 8px 16px;
+  height: 44px;
+  width: 140px;
   font-size: 16px;
   background-color: transparent;
   border: 2px solid #0094C6;
   color: #0094C6;
   font-weight: bold;
   transition: all 1s ease;
+
+  &:focus{
+    outline: 0;
+  }
 }
 
 .subject-button:hover {
@@ -60,19 +109,24 @@ body {
 }
 
 .leaflet-top, .leaflet-left {
-  height: 61%;
-  background-color: #fff;
-  padding-top: 140px;
+  height: 373px;
+  background: rgba(0,0,0,0.85);
+  margin-top: 120px;
   width: 151px;
   display: flex;
   flex-flow: row wrap;
   justify-content: space-around;
   align-items: flex-start;
   z-index: inherit;
+
+  > div {
+    margin-top: 66px !important;
+  }
 }
 
 .leaflet-right {
   left: 0;
+  background-color: transparent;
 }
 
 .leaflet-left, .leaflet-control {
@@ -89,18 +143,17 @@ body {
 .info {
   padding: 6px 8px;
   font: 14px/16px Arial, Helvetica, sans-serif;
-  background: white;
-  background: rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0);
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
-  border-radius: 5px;
+  color: #0094C6;
 }
 .info h4 {
   margin: 0 0 5px;
-  color: #777;
+  color: #0094C6;
 }
 .legend {
   line-height: 18px;
-  color: #555;
+  color: #0094C6;
 }
 .legend i {
   width: 18px;
