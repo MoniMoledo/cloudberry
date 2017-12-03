@@ -37,9 +37,10 @@ body {
   z-index: 1000;
   display: flex;
   flex-flow: row wrap;
-  width: 162px;
+  width: 206px;
   justify-content: flex-end;
   padding: 16px 0;
+  letter-spacing: 6px;
 }
 
 #header-control .title h1 {
@@ -107,9 +108,9 @@ body {
 }
 
 .leaflet-top, .leaflet-left {
-  height: 61%;
-  background-color: #fff;
-  padding-top: 140px;
+  height: 373px;
+  background: rgba(0, 0, 0, 0.85);
+  margin-top: 120px;
   width: 151px;
   display: flex;
   flex-flow: row wrap;
@@ -118,8 +119,13 @@ body {
   z-index: inherit;
 }
 
+.leaflet-top > div, .leaflet-left > div {
+  margin-top: 66px !important;
+}
+
 .leaflet-right {
   left: 0;
+  background-color: transparent;
 }
 
 .leaflet-left, .leaflet-control {
@@ -136,19 +142,19 @@ body {
 .info {
   padding: 6px 8px;
   font: 14px/16px Arial, Helvetica, sans-serif;
-  background: rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0);
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
-  border-radius: 5px;
+  color: #0094C6;
 }
 
 .info h4 {
   margin: 0 0 5px;
-  color: #777;
+  color: #0094C6;
 }
 
 .legend {
   line-height: 18px;
-  color: #555;
+  color: #0094C6;
 }
 
 .legend i {
