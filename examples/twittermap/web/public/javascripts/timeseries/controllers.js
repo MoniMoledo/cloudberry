@@ -36,7 +36,7 @@ angular.module('cloudberry.timeseries', ['cloudberry.common'])
     countDiv.id = "count-div";
     countDiv.title = "Display the count information of Tweets";
     countDiv.innerHTML = [
-      "<div ng-if='queried'><p id='count'>{{ currentTweetCount | number:0 }}<span id='count-text'>&nbsp;&nbsp;of&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></p></div>",
+      "<div ng-if='queried'><p id='count'>{{ currentTweetCount | number:0 }}<span id='count-text'>of</span></p></div>",
       "<p id='count'>{{ totalCount | number:0 }}<span id='count-text'>{{sumText}}</span></p>",
     ].join("");
     var stats = document.getElementsByClassName("stats")[0];
@@ -44,22 +44,19 @@ angular.module('cloudberry.timeseries', ['cloudberry.common'])
     stats.appendChild(countDiv);
 
 
-    $scope.$watch(
+    $scope.$watchCollection(
       function() {
-        return
-          //'tTimeResult': cloudberry.tweetTimeResult,
-          cloudberry.newsTimeResult
+        return {
+          'tTimeResult': cloudberry.tweetTimeResult,
+          'nTimeResult': cloudberry.newsTimeResult
+        }
       },
 
       function(newResult) {
         if(newResult) {
-          $scope.result = newResult;
-          $scope.resultArray = $scope.preProcess(newResult);
+          $scope.result = newResult['tTimeResult'].concat(newResult['nTimeResult']);
+          $scope.resultArray = $scope.preProcess($scope.result);
         }
-        // else if(newResult['nTimeResult']) {
-        //   $scope.result = newResult['nTimeResult'];
-        //   $scope.resultArray = $scope.preProcess(newResult['nTimeResult']);
-        // }
         else {
           $scope.result = {};
           $scope.resultArray = [];
@@ -146,7 +143,7 @@ angular.module('cloudberry.timeseries', ['cloudberry.common'])
                 .on("click", function() { timeSeries.filterAll(); dc.redrawAll(); requestFunc(minDate, maxDate);})
                 .style("position", "absolute")
                 .style("bottom", "90%")
-                .style("left", "5%");
+                .style("right", "32px");
 
 
             var startDate = (minDate.getFullYear()+"-"+(minDate.getMonth()+1));

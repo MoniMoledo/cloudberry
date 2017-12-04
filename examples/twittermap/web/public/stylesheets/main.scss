@@ -236,9 +236,11 @@ body {
 time-series {
   z-index: 1000;
   pointer-events: auto;
-  position: relative;
-  display: inline-block;
-  left: 4%;
+  display: flex;
+  bottom: 0;
+  width: 100%;
+  justify-content: flex-end;
+  position: absolute;
 }
 
 #count-div{
@@ -250,9 +252,12 @@ time-series {
 
   #count{
     font-size: 22px;
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
     
     > span {
-      display: block;
+      padding: 0 8px;
     }
   }
 }
