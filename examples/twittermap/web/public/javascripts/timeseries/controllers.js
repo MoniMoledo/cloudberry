@@ -37,7 +37,7 @@ angular.module('cloudberry.timeseries', ['cloudberry.common'])
     countDiv.title = "Display the count information of Tweets";
     countDiv.innerHTML = [
       "<div ng-if='queried'><p id='count'>{{ currentTweetCount | number:0 }}<span id='count-text'>&nbsp;&nbsp;of&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></p></div>",
-      "<p id='count'>{{ totalCount | number:0 }}<span id='count-text'>&nbsp;&nbsp;{{sumText}}</span></p>",
+      "<p id='count'>{{ totalCount | number:0 }}<span id='count-text'>{{sumText}}</span></p>",
     ].join("");
     var stats = document.getElementsByClassName("stats")[0];
     $compile(countDiv)($scope);
@@ -95,6 +95,7 @@ angular.module('cloudberry.timeseries', ['cloudberry.common'])
         controller: 'TimeSeriesCtrl',
         link: function ($scope, $element, $attrs) {
           var chart = d3.select($element[0]);
+          console.log(d3);
           $scope.$watch('resultArray', function (newVal, oldVal) {
 
             if(oldVal.length == 0)

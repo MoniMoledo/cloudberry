@@ -25,7 +25,7 @@ body {
 #header-control .controls {
   width: 100%;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   flex-flow: row wrap;
   filter: none;
@@ -37,7 +37,7 @@ body {
   z-index: 1000;
   display: flex;
   flex-flow: row wrap;
-  width: 206px;
+  width: 152px;
   justify-content: flex-end;
   padding: 16px 0;
   letter-spacing: 6px;
@@ -55,7 +55,7 @@ body {
 }
 
 #header-control .buttons {
-  width: 80%;
+  min-width: 82%;
   display: flex;
   justify-content: center;
   flex-flow: row wrap;
@@ -107,9 +107,17 @@ body {
   color: white;
 }
 
+.sidebar {
+  position: absolute;
+  width: 151px;
+  height: calc(100% - 120px);
+  background: rgba(0, 0, 0, 0.85);
+  bottom: 0;
+}
+
 .leaflet-top, .leaflet-left {
   height: 373px;
-  background: rgba(0, 0, 0, 0.85);
+  background-color: transparent;
   margin-top: 120px;
   width: 151px;
   display: flex;
@@ -232,22 +240,19 @@ time-series {
 }
 
 #count-div {
-  color: #000000;
-  font-weight: 500;
-  margin-top: 20px;
-  margin-bottom: 40px;
-  padding-left: 10px;
-  float: left;
+  color: #0094C6;
+  font-weight: 100;
+  padding: 12px;
+  width: 151px;
+  text-align: center;
 }
 
-#count {
-  font-size: 32px;
-  margin-bottom: 0;
-  text-align: right;
+#count-div #count {
+  font-size: 22px;
 }
 
-#count-text {
-  font-size: 13px;
+#count-div #count > span {
+  display: block;
 }
 
 .normalize p {

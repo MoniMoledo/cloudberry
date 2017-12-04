@@ -1,6 +1,9 @@
 @import url('https://fonts.googleapis.com/css?family=Poiret+One');
 @import url('https://fonts.googleapis.com/css?family=Roboto');
 
+$sidebarWidth: 151px;
+$lightBlue: #0094C6;
+
 body {
   margin: 0;
   padding: 0;
@@ -27,7 +30,7 @@ body {
   .controls {
     width: 100%;
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     flex-flow: row wrap;
     filter: none;
@@ -35,11 +38,11 @@ body {
 
   .title {
     font-family: 'Poiret One', cursive;
-    color: #0094C6;
+    color: $lightBlue;
     z-index: 1000;
     display: flex;
     flex-flow: row wrap;
-    width: 206px;
+    width: 152px;
     justify-content: flex-end;
     padding: 16px 0;
     letter-spacing: 6px;
@@ -56,7 +59,7 @@ body {
   }
 
   .buttons {
-    width: 80%;
+    min-width: 82%;
     display: flex;
     justify-content: center;
     flex-flow: row wrap;
@@ -69,7 +72,7 @@ body {
     }
 
     .sources {
-      color: #0094C6;
+      color: $lightBlue;
       width: 100%;
       text-align: center;
       padding-top: 8px;
@@ -85,8 +88,8 @@ body {
   width: 140px;
   font-size: 16px;
   background-color: transparent;
-  border: 2px solid #0094C6;
-  color: #0094C6;
+  border: 2px solid $lightBlue;
+  color: $lightBlue;
   font-weight: bold;
   transition: all 1s ease;
 
@@ -96,8 +99,8 @@ body {
 }
 
 .subject-button:hover {
-  background-color: #0094C6;
-  border: 2px solid #0094C6;
+  background-color: $lightBlue;
+  border: 2px solid $lightBlue;
   color: #fff;
   transition: all 1s ease;
 }
@@ -108,11 +111,19 @@ body {
   color: white;
 }
 
+.sidebar {
+  position: absolute;
+  width: $sidebarWidth;
+  height: calc(100% - 120px);
+  background: rgba(0, 0, 0, 0.85);
+  bottom: 0;
+}
+
 .leaflet-top, .leaflet-left {
   height: 373px;
-  background: rgba(0,0,0,0.85);
+  background-color: transparent;
   margin-top: 120px;
-  width: 151px;
+  width: $sidebarWidth;
   display: flex;
   flex-flow: row wrap;
   justify-content: space-around;
@@ -145,15 +156,15 @@ body {
   font: 14px/16px Arial, Helvetica, sans-serif;
   background: rgba(255, 255, 255, 0);
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
-  color: #0094C6;
+  color: $lightBlue;
 }
 .info h4 {
   margin: 0 0 5px;
-  color: #0094C6;
+  color: $lightBlue;
 }
 .legend {
   line-height: 18px;
-  color: #0094C6;
+  color: $lightBlue;
 }
 .legend i {
   width: 18px;
@@ -231,22 +242,19 @@ time-series {
 }
 
 #count-div{
-  color: #000000;
-  font-weight:500;
-  margin-top: 20px;
-  margin-bottom: 40px;
-  padding-left: 10px;
-  float: left;
-}
+  color: $lightBlue;
+  font-weight:100;
+  padding: 12px;
+  width: $sidebarWidth;
+  text-align: center;
 
-#count{
-  font-size: 32px;
-  margin-bottom: 0;
-  text-align: right;
-}
-
-#count-text{
-  font-size: 13px;
+  #count{
+    font-size: 22px;
+    
+    > span {
+      display: block;
+    }
+  }
 }
 
 .normalize p{

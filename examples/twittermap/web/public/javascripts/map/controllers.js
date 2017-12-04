@@ -298,6 +298,31 @@ angular.module('cloudberry.map', ['leaflet-directive', 'cloudberry.common','clou
           cloudberry.parameters.geoLevel = $scope.status.logicLevel;
           cloudberry.query(cloudberry.parameters);
         }
+      });      $scope.$on("leafletDirectiveMap.dragend", function() {
+        if (!$scope.status.init) {
+          $scope.bounds = $scope.map.getBounds();
+          var geoData;
+          if ($scope.status.logicLevel === 'state') {
+            geoData = $scope.geojsonData.state;
+          }
+          //  else if ($scope.status.logicLevel === 'county') {
+          //   geoData = $scope.geojsonData.county;
+          // }
+           else if ($scope.status.logicLevel === 'city') {
+            geoData = $scope.geojsonData.city;
+          } else {
+            console.error("Error: Illegal value of logicLevel, set to default: state");
+            $scope.status.logicLevel = 'state';
+            geoData = $scope.geojsonData.state;
+          }
+        }
+        if ($scope.status.logicLevel === 'city') {
+          loadCityJsonByBound(onEachFeature);
+        } else {
+          resetGeoIds($scope.bounds, geoData, $scope.status.logicLevel + "ID");
+          cloudberry.parameters.geoLevel = $scope.status.logicLevel;
+          cloudberry.query(cloudberry.parameters);
+        }
       });
 
     }
