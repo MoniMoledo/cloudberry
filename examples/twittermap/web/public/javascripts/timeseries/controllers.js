@@ -53,7 +53,7 @@ angular.module('cloudberry.timeseries', ['cloudberry.common'])
       },
 
       function(newResult) {
-        if(true) {
+        if(newResult) {
           $scope.result = newResult['tTimeResult'].concat(newResult['nTimeResult']);
           $scope.resultArray = $scope.preProcess($scope.result);
         }
