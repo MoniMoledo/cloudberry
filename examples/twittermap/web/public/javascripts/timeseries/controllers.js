@@ -44,22 +44,19 @@ angular.module('cloudberry.timeseries', ['cloudberry.common'])
     stats.appendChild(countDiv);
 
 
-    $scope.$watch(
+    $scope.$watchCollection(
       function() {
-        return
-          //'tTimeResult': cloudberry.tweetTimeResult,
-          cloudberry.newsTimeResult
+        return {
+          'tTimeResult': cloudberry.tweetTimeResult,
+          'nTimeResult': cloudberry.newsTimeResult
+        }
       },
 
       function(newResult) {
-        if(newResult) {
-          $scope.result = newResult;
-          $scope.resultArray = $scope.preProcess(newResult);
+        if(true) {
+          $scope.result = newResult['tTimeResult'].concat(newResult['nTimeResult']);
+          $scope.resultArray = $scope.preProcess($scope.result);
         }
-        // else if(newResult['nTimeResult']) {
-        //   $scope.result = newResult['nTimeResult'];
-        //   $scope.resultArray = $scope.preProcess(newResult['nTimeResult']);
-        // }
         else {
           $scope.result = {};
           $scope.resultArray = [];
