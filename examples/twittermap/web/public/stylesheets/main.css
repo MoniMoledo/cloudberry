@@ -25,7 +25,7 @@ body {
 #header-control .controls {
   width: 100%;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   flex-flow: row wrap;
   filter: none;
@@ -37,7 +37,7 @@ body {
   z-index: 1000;
   display: flex;
   flex-flow: row wrap;
-  width: 206px;
+  width: 152px;
   justify-content: flex-end;
   padding: 16px 0;
   letter-spacing: 6px;
@@ -55,7 +55,7 @@ body {
 }
 
 #header-control .buttons {
-  width: 80%;
+  min-width: 82%;
   display: flex;
   justify-content: center;
   flex-flow: row wrap;
@@ -232,22 +232,14 @@ time-series {
 }
 
 #count-div {
-  color: #000000;
-  font-weight: 500;
-  margin-top: 20px;
-  margin-bottom: 40px;
-  padding-left: 10px;
-  float: left;
+  color: #0094C6;
+  font-weight: 100;
+  margin: 20px;
 }
 
 #count {
-  font-size: 32px;
+  font-size: 26px;
   margin-bottom: 0;
-  text-align: right;
-}
-
-#count-text {
-  font-size: 13px;
 }
 
 .normalize p {
