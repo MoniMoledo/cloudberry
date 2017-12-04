@@ -203,21 +203,6 @@ angular.module('cloudberry.common', ['cloudberry.mapresultcache'])
       query: function(parameters) {
         var newsDataset = "webhose.ds_news";
         var tweetDataset = "twitter.ds_tweet";
-        // var newsSampleJson = (JSON.stringify({
-        //   dataset: newsDataset,
-        //   filter: getFilter(parameters, defaultSamplingDayRange, parameters.geoIds, newsDataset),
-        //   select: {
-        //     order: ["-"+ getTimeField(newsDataset)],
-        //     limit: defaultSamplingSize,
-        //     offset: 0,
-        //     field: [getTimeField(newsDataset), getIdField(newsDataset)]
-        //   },
-        //   transform: {
-        //     wrap: {
-        //       key: "newsSample"
-        //     }
-        //   }
-        // }));
         var tweetSampleJson = (JSON.stringify({
           dataset: tweetDataset,
           filter: getFilter(parameters, defaultSamplingDayRange, parameters.geoIds, tweetDataset),
@@ -301,7 +286,7 @@ angular.module('cloudberry.common', ['cloudberry.mapresultcache'])
         }));
 
         var newsBatchWithPartialGeoRequest = cloudberryConfig.querySliceMills > 0 ? (JSON.stringify({
-          batch: [byTimeRequest(parameters,newsDataset), byGeoRequest(parameters, geoIdsNotInCache,newsDataset)],
+          batch: [byTimeRequest(parameters, newsDataset), byGeoRequest(parameters, geoIdsNotInCache, newsDataset)],
           option: {
             sliceMillis: cloudberryConfig.querySliceMills
           },
