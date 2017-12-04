@@ -107,9 +107,17 @@ body {
   color: white;
 }
 
+.sidebar {
+  position: absolute;
+  width: 151px;
+  height: calc(100% - 120px);
+  background: rgba(0, 0, 0, 0.85);
+  bottom: 0;
+}
+
 .leaflet-top, .leaflet-left {
   height: 373px;
-  background: rgba(0, 0, 0, 0.85);
+  background-color: transparent;
   margin-top: 120px;
   width: 151px;
   display: flex;
@@ -234,12 +242,17 @@ time-series {
 #count-div {
   color: #0094C6;
   font-weight: 100;
-  margin: 20px;
+  padding: 12px;
+  width: 151px;
+  text-align: center;
 }
 
-#count {
-  font-size: 26px;
-  margin-bottom: 0;
+#count-div #count {
+  font-size: 22px;
+}
+
+#count-div #count > span {
+  display: block;
 }
 
 .normalize p {
