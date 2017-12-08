@@ -31,17 +31,17 @@ You can run the following command in a separate command line window:
 
 The following screenshots shows the examples of the first tests made, with 1062 records on Asterix datasets.
 
-![Initial screen](/../doc/aedeswebview/screen-empty.png?raw=true "Initial screen")
+![Initial screen](doc/aedeswebview/screen-empty.png?raw=true "Initial screen")
 
-![Dengue search on both datasets](cloudberry/docs/aedeswebview/screen-dengue.png?raw=true "Dengue search on both datasets")
+![Dengue search on both datasets](docs/aedeswebview/screen-dengue.png?raw=true "Dengue search on both datasets")
 
-![Dengue search filtering by tweets](cloudberry/docs/aedeswebview/screen-tweet.png?raw=true "Dengue search filtering by tweets")
+![Dengue search filtering by tweets](docs/aedeswebview/screen-tweet.png?raw=true "Dengue search filtering by tweets")
 
-![Dengue search filtering by news](cloudberry/docs/aedeswebview/screen-news.png?raw=true "Dengue search filtering by news")
+![Dengue search filtering by news](docs/aedeswebview/screen-news.png?raw=true "Dengue search filtering by news")
 
-![Dengue search filtering by time](cloudberry/docs/aedeswebview/screen-december.png?raw=true "Dengue search filtering by time")
+![Dengue search filtering by time](docs/aedeswebview/screen-december.png?raw=true "Dengue search filtering by time")
 
-![Dengue search on city level](cloudberry/docs/aedeswebview/screen-city.png?raw=true "Dengue search on city level")
+![Dengue search on city level](docs/aedeswebview/screen-city.png?raw=true "Dengue search on city level")
 
 
 ### Acknowledgments
