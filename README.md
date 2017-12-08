@@ -33,15 +33,15 @@ The following screenshots shows the examples of the first tests made, with 1062 
 
 ![Initial screen](/../doc/aedeswebview/screen-empty.png?raw=true "Initial screen")
 
-![Dengue search on both datasets](https://github.com/MoniMoledo/cloudberry/tree/doc/docs/aedeswebview/screen-dengue.png?raw=true "Dengue search on both datasets")
+![Dengue search on both datasets](cloudberry/docs/aedeswebview/screen-dengue.png?raw=true "Dengue search on both datasets")
 
-![Dengue search filtering by tweets](https://github.com/MoniMoledo/cloudberry/tree/doc/docs/aedeswebview/screen-tweet.png?raw=true "Dengue search filtering by tweets")
+![Dengue search filtering by tweets](cloudberry/docs/aedeswebview/screen-tweet.png?raw=true "Dengue search filtering by tweets")
 
-![Dengue search filtering by news](https://github.com/MoniMoledo/cloudberry/tree/doc/docs/aedeswebview/screen-news.png?raw=true "Dengue search filtering by news")
+![Dengue search filtering by news](cloudberry/docs/aedeswebview/screen-news.png?raw=true "Dengue search filtering by news")
 
-![Dengue search filtering by time](https://github.com/MoniMoledo/cloudberry/tree/doc/docs/aedeswebview/screen-december.png?raw=true "Dengue search filtering by time")
+![Dengue search filtering by time](cloudberry/docs/aedeswebview/screen-december.png?raw=true "Dengue search filtering by time")
 
-![Dengue search on city level](https://github.com/MoniMoledo/cloudberry/tree/doc/docs/aedeswebview/screen-city.png?raw=true "Dengue search on city level")
+![Dengue search on city level](cloudberry/docs/aedeswebview/screen-city.png?raw=true "Dengue search on city level")
 
 
 ### Acknowledgments
