@@ -29,17 +29,17 @@ You can run the following command in a separate command line window:
 
 ### Tests
 
-The following screenshots shows the examples of the first tests made, with 1062 records on Asterix datasets.
+The following screenshots shows some examples of the first test made, with 1062 records on Asterix datasets.
 
-![Initial screen](doc/aedeswebview/screen-empty.png?raw=true "Initial screen")
+Initial screen
+
+![Initial screen](docs/aedeswebview/screen-empty.png?raw=true "Initial screen")
+
+Dengue search on both datasets
 
 ![Dengue search on both datasets](docs/aedeswebview/screen-dengue.png?raw=true "Dengue search on both datasets")
 
-![Dengue search filtering by tweets](docs/aedeswebview/screen-tweet.png?raw=true "Dengue search filtering by tweets")
-
-![Dengue search filtering by news](docs/aedeswebview/screen-news.png?raw=true "Dengue search filtering by news")
-
-![Dengue search filtering by time](docs/aedeswebview/screen-december.png?raw=true "Dengue search filtering by time")
+Dengue search on city level
 
 ![Dengue search on city level](docs/aedeswebview/screen-city.png?raw=true "Dengue search on city level")
 
@@ -47,5 +47,4 @@ The following screenshots shows the examples of the first tests made, with 1062 
 ### Acknowledgments
 
 * This application was inspired on the [TwitterMap Demo](http://cloudberry.ics.uci.edu/demos/twittermap/)
-* Users and developers are welcome to contact me through moniquemoledo@id.uff.br 
-* This application is currently running on Universidade Federal Fluminense servers (08/12/2017). 
+* Users and developers are welcome to contact me through moniquemoledo@id.uff.br
