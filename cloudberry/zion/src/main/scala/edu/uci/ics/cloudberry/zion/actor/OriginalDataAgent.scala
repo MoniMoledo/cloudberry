@@ -109,7 +109,7 @@ object OriginalDataAgent {
 
   object Cardinality {
     def apply(from: DateTime, till: DateTime, count: Long): Cardinality = {
-      val ratePerSecond = (count / new Duration(from, till).getStandardSeconds).toInt
+      val ratePerSecond = (count / (new Duration(from, till).getStandardSeconds + 1)).toInt
       new Cardinality(from, till, count, ratePerSecond)
     }
   }

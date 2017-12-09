@@ -44,3 +44,11 @@ server.pid
 .cache
 
 .idea/
+
+\.history
+
+*.gz
+
+target
+
+gnosis/target
