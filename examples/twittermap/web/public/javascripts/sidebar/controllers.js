@@ -53,4 +53,58 @@ angular.module('cloudberry.sidebar', ['cloudberry.common'])
       restrict: 'E',
       controller: 'TweetCtrl'
     };
-  });
+  })
+
+    .controller('choosemap', function ($scope, $window, cloudberry, $rootScope) {
+
+        $scope.result = null;
+        cloudberry.parameters.maptype = 'countmap';
+
+        var icon1 = document.getElementById('img1');
+        var icon2 = document.getElementById('img2');
+        var icon3 = document.getElementById('img3');
+
+        icon1.addEventListener("click", function () {
+
+            if (cloudberry.parameters.maptype !== 'countmap') {
+                cloudberry.parameters.maptype = 'countmap';
+                icon1.src = "/assets/images/aggregation_map.png";
+                icon2.src = "/assets/images/heat_map_no_border.png";
+                icon3.src = "/assets/images/point_map_no_border.png";
+                $rootScope.$emit("maptypeChange", cloudberry.parameters.maptype);
+            }
+
+        });
+
+        icon2.addEventListener("click", function () {
+
+            if (cloudberry.parameters.maptype !== 'heatmap') {
+                cloudberry.parameters.maptype = 'heatmap';
+                icon1.src = "/assets/images/aggregation_map_no_border.png";
+                icon2.src = "/assets/images/heat_map.png";
+                icon3.src = "/assets/images/point_map_no_border.png";
+                $rootScope.$emit("maptypeChange", cloudberry.parameters.maptype);
+            }
+
+        });
+
+        icon3.addEventListener("click", function () {
+
+            if (cloudberry.parameters.maptype !== 'pointmap') {
+                cloudberry.parameters.maptype = 'pointmap';
+                icon1.src = "/assets/images/aggregation_map_no_border.png";
+                icon2.src = "/assets/images/heat_map_no_border.png";
+                icon3.src = "/assets/images/point_map.png";
+                $rootScope.$emit("maptypeChange", cloudberry.parameters.maptype);
+            }
+
+        });
+
+    })
+
+    .directive('mapchoose', function () {
+        return {
+            restrict: 'E',
+            controller: 'choosemap'
+        };
+    });
